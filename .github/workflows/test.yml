@@ -23,4 +23,6 @@ jobs:
       run: |
             export PATH=bin:$PATH
             chmod +x bin/metafx
+            chmod +x bin/metafx-modules/*
+            chmod +x bin/metafx-scripts/*
             metafx unique -t 2 -m 6G -k 31 -i test_data/sample_list.txt
