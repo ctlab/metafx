@@ -1,3 +1,5 @@
+![Test](https://github.com/ivartb/metafast_new/actions/workflows/test.yml/badge.svg)
+
 # MetaFX
 
 **MetaFX** (METAgenomic Feature eXtraction) is an open-source library for feature extraction from whole-genome metagenome sequencing data and classification of groups of samples.
