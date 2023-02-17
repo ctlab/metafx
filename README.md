@@ -1,4 +1,4 @@
-![Test](https://github.com/ivartb/metafast_new/actions/workflows/test.yml/badge.svg)
+![Test](https://github.com/ivartb/metafx_new/actions/workflows/test.yml/badge.svg)
 
 # MetaFX
 
