@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+##########################################################################################
+##### Master MetaFX script that calls pipelines for Metagenomics Feature eXtraction ######
+##########################################################################################
+
+VERSION="0.1.0"
+
+help_message () {
+    echo ""
+    echo "MetaFX v=$VERSION"
+    echo "MetaFX (METAgenomic Feature eXtraction) is a toolkit for feature construction and classification of metagenomic samples"
+    echo "Usage: metafx [pipeline]"
+    echo ""
+    echo "Pipelines:"
+    echo "    metafast          Unsupervised feature extraction via MetaFast (https://github.com/ctlab/metafast/)"
+    echo "    metaspades        Unsupervised feature extraction via metaSpades (https://cab.spbu.ru/software/meta-spades/)"
+    echo ""
+    echo "    unique            Supervised feature extraction using group-specific k-mers"
+    echo "    stats             Supervised feature extraction using statistically significant k-mers"
+    echo "    colored           Supervised feature extraction using group-colored de Bruijn graph"
+    echo "    lda               Supervised feature extraction via Latent Dirichlet allocation model"
+    echo ""
+    echo "    predict           Machine Learning methods for classification based on extracted features"
+    echo ""
+    echo "    -h | --help       Show this help message and exit"
+    echo "    -v | --version    Show MetaFX version and exit"
+    echo "";}
+
+
+# Paths to pipelines and scripts
+mfx_path=$(which metafx)
+bin_path=${mfx_path%/*}
+SOFT=${bin_path}/metafx-scripts
+PIPES=${bin_path}/metafx-modules
+
+comment () { ${SOFT}/pretty_print.py "$1" "-"; }
+
+if [ "$1" = metafast ]; then
+    echo metafx metafast ${@:2}
+    time ${PIPES}/metafast_pipe.sh ${@:2}
+elif [ "$1" = metaspades ]; then
+    echo metafx metaspades ${@:2}
+    time ${PIPES}/metaspades.sh ${@:2}
+elif [ "$1" = unique ]; then
+    echo metafx unique ${@:2}
+    time ${PIPES}/unique.sh ${@:2}
+elif [ "$1" = stats ]; then
+    echo metafx stats ${@:2}
+    time ${PIPES}/stats.sh ${@:2}
+elif [ "$1" = colored ]; then
+    echo metafx colored ${@:2}
+    time ${PIPES}/colored.sh ${@:2}
+elif [ "$1" = lda ]; then
+    echo metafx lda ${@:2}
+    time ${PIPES}/lda.sh ${@:2}
+elif [ "$1" = predict ]; then
+    echo metafx predict ${@:2}
+    time ${PIPES}/predict.sh ${@:2}
+elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help_message
+    exit 0
+elif [ "$1" = "-v" ] || [ "$1" = "--version" ]; then
+    echo "MetaFX v=$VERSION"
+    exit 0
+else
+    comment "Please select a proper pipeline of MetaFX." &&
+    help_message && 
+    exit 1
+fi
