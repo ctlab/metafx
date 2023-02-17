@@ -2,10 +2,10 @@ test_data/test/1.fasta	A
 test_data/test/11.fa	A
 test_data/test/111.FASTA	A
 test_data/test/1111.FA	A
-/media/sf_metafx_new/test_data/test/2.fasta.gz	B
-/media/sf_metafx_new/test_data/test/22_r1.fastq.gz	B
-/media/sf_metafx_new/test_data/test/22_r2.fastq.gz	B
-/media/sf_metafx_new/test_data/test/222.fa.gz	B
+test_data/test/2.fasta.gz	B
+test_data/test/22_r1.fastq.gz	B
+test_data/test/22_r2.fastq.gz	B
+test_data/test/222.fa.gz	B
 test_data/3_1.fasta.bz2	C
 test_data/3_2.fasta.bz2	C
 test_data/33_1.fastq	C
@@ -16,6 +16,6 @@ test_data/3333_1.FQ	C
 test_data/3333_2.FQ	C
 test_data/33333_1.FASTQ	C
 test_data/33333_2.FASTQ	C
-/media/sf_metafx_new/test_data/4_R1.fastq.bz2	D
-/media/sf_metafx_new/test_data/44.fa.bz2	D
-/media/sf_metafx_new/test_data/4_R2.fastq.bz2	D
+test_data/4_R1.fastq.bz2	D
+test_data/44.fa.bz2	D
+test_data/4_R2.fastq.bz2	D
