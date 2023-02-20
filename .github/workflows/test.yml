@@ -19,13 +19,17 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Setup
+    - name: metafx unique
       run: |
         export PATH=bin:$PATH
         chmod +x bin/metafx
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
-    - name: metafx unique
-      run: metafx unique -t 2 -m 6G -k 31 -i test_data/sample_list.txt -w wd_unique
+        metafx unique -t 2 -m 6G -k 31 -i test_data/sample_list.txt -w wd_unique
     - name: metafx metafast
-      run: metafx metafast -t 2 -m 6G -k 31 -i test_data/test/* test_data/3* test_data/4* -b1 200 -b2 5000 -l 50 -w wd_metafast
+      run: |
+        export PATH=bin:$PATH
+        chmod +x bin/metafx
+        chmod +x bin/metafx-modules/*
+        chmod +x bin/metafx-scripts/*
+        metafx metafast -t 2 -m 6G -k 31 -i test_data/test/* test_data/3* test_data/4* -b1 200 -b2 5000 -l 50 -w wd_metafast
