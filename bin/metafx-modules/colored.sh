@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 ##########################################################################################
-#####  MetaFX unique module to extract specific k-mers from groups of metagenomes   ######
+#####  MetaFX colored module to extract features from group-colored de Bruijn graph ######
 ##########################################################################################
 
 help_message () {
     echo ""
     echo "$(metafx -v)"
-    echo "MetaFX unique module – supervised feature extraction using group-specific k-mers"
-    echo "Usage: metafx unique [<Launch options>] [<Input parameters>]"
+    echo "MetaFX colored module – supervised feature extraction using group-colored de Bruijn graph"
+    echo "Important! This module supports up to 3 categories of samples. If you have more, consider using other modules of MetaFX."
+    echo "Usage: metafx colored [<Launch options>] [<Input parameters>]"
     echo ""
     echo "Launch options:"
     echo "    -h | --help                       show this help message and exit"
@@ -19,8 +20,11 @@ help_message () {
     echo "    -k | --k             <int>        k-mer size (in nucleotides, maximum value is 31) [mandatory]"
     echo "    -i | --reads-file    <filename>   tab-separated file with 2 values in each row: <path_to_file>\t<category> [mandatory]"
     echo "    -b | --bad-frequency <int>        maximal frequency for a k-mer to be assumed erroneous [default: 1]"
-    echo "         --min-samples   <int>        k-mer is considered group-specific if present in at least G samples of that group. G iterates in range [--min-samples; --max-samples] [default: 2]"
-    echo "         --max-samples   <int>        k-mer is considered group-specific if present in at least G samples of that group. G iterates in range [--min-samples; --max-samples] [default: #{samples in category}/2 + 1]"
+    echo "         --total-coverage             if TRUE count k-mers occurrences in colored graph as total coverage in samples, otherwise as number of samples [default: False]"
+    echo "         --separate                   if TRUE use only color-specific k-mers in components (does not work in linear mode) [default: False]"
+    echo "         --linear                     if TRUE extract only linear components choosing best path on each graph fork [default: False]"
+    echo "         --n-comps       <int>        select not more than <int> components for each category [default: -1, means all components]"
+    echo "         --perc          <float>      relative abundance of k-mer in category to be considered color-specific [default: 0.9]"
     echo "         --kmers-dir     <dirname>    directory with pre-computed k-mers for samples in binary format [optional]"
     echo "";}
 
@@ -68,14 +72,25 @@ case $key in
     shift
     shift
     ;;
-    
-    --min-samples)
-    minSamples="$2"
+    --total-coverage)
+    totalCoverage=true
+    shift
+    ;;
+    --separate)
+    separate=true
+    shift
+    ;;
+    --linear)
+    linear=true
+    shift
+    ;;
+    --n-comps)
+    nComps="$2"
     shift
     shift
     ;;
-    --max-samples)
-    maxSamples="$2"
+    --perc)
+    perc="$2"
     shift
     shift
     ;;
@@ -102,6 +117,13 @@ case $key in
 esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
+
+
+if [[ ${separate} && ${linear} ]]; then
+    help_message
+    error "Error! Both 'separate' and 'linear' flags were selected! You can choose only one."
+    exit 1
+fi
 
 
 cmd="${PIPES}/metafast.sh "
@@ -148,51 +170,39 @@ fi
 
 
 # ==== Step 2 ====
-comment "Running step 2: extracting group-specific k-mers"
+comment "Running step 2: defining k-mers colors based on occurrences in categories"
 
 python3 ${SOFT}/parse_samples_categories.py ${i} > ${w}/categories_samples.tsv
-tmp=$(wc -l < ${w}/categories_samples.tsv)
-if [[ $tmp -lt 2 ]]; then
-    echo "Found only $tmp categories in ${i} file. Provide at least 2 categories of input samples!"
+n_cat=$(wc -l < ${w}/categories_samples.tsv)
+if [[ ${n_cat} -lt 2 ]]; then
+    echo "Found only ${n_cat} categories in ${i} file. Provide at least 2 categories of input samples!"
     error "Error during step 2!"
     exit 1
 fi
+if [[ ${n_cat} -gt 3 ]]; then
+    echo "Found ${n_cat} categories in ${i} file. This module supports up to 3 categories of samples, consider using other modules of MetaFX."
+    error "Error during step 2!"
+    exit 1
+fi
+IFS=$'\n' read -rd '' -a catNames <<< "$(python3 ${SOFT}/get_samples_labels_for_colored.py ${w})"
+
 
 cmd2=$cmd
-cmd2+="-t unique-kmers-multi "
-while read line ; do
-    IFS=$'\t' read -ra cat_samples <<< "${line}"
-    echo "Processing category ${cat_samples[0]}"
-    
-    cmd2_i=$cmd2
-    
-    if [[ ${minSamples} ]]; then
-        cmd2_i+="--min-samples ${minSamples} "
-    else
-        cmd2_i+="--min-samples 2 "
-    fi
-    if [[ ${maxSamples} ]]; then
-        cmd2_i+="--max-samples ${maxSamples} "
-    else
-        cmd2_i+="--max-samples $(( $(wc -w <<< "${cat_samples[1]}") / 2 + 1)) "
-    fi
-    
-    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
-    cmd2_i+="-i $tmp"
-    tmp="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
-    cmd2_i+="--filter-kmers $tmp"
-    cmd2_i+="-w ${w}/unique_kmers_${cat_samples[0]}/"
+cmd2+="-t kmers-color "
+tmp=$(cut -d$'\t' -f2 ${w}/categories_samples.tsv | tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
+tmp="${kmersDir}/${tmp// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+cmd2+="-kf ${tmp} "
+cmd2+="--class ${w}/samples_labels.tsv "
+if [[ ${b} ]]; then
+    cmd2+="-b ${b} "
+fi
+if [[ ${totalCoverage} ]]; then
+    cmd2+="--val "
+fi
+cmd2+="-w ${w}/kmers_color/"
 
-    echo "${cmd2_i}"
-    ${cmd2_i}
-    if [[ $? -eq 0 ]]; then
-        echo "Processed category ${cat_samples[0]}"
-    else
-        error "Error during step 2!"
-        exit 1
-    fi
-done<${w}/categories_samples.tsv
-
+echo "${cmd2}"
+${cmd2}
 if [[ $? -eq 0 ]]; then
     comment "Step 2 finished successfully!"
 else
@@ -202,42 +212,28 @@ fi
 
 
 # ==== Step 3 ====
-comment "Running step 3: extracting graph components around group-specific k-mers"
+comment "Running step 3: extracting graph components based on k-mers coloring"
 
 cmd3=$cmd
-cmd3+="-t component-extractor "
+cmd3+="-t component-colored "
+cmd3+="-i ${w}/kmers_color/colored-kmers/colored_kmers.kmers.bin "
+cmd3+="--n_groups ${n_cat} "
+if [[ ${separate} ]]; then 
+    cmd3+="--separate "
+fi
+if [[ ${linear} ]]; then 
+    cmd3+="--linear "
+fi
+if [[ ${nComps} ]]; then 
+    cmd3+="--n_comps ${nComps} "
+fi
+if [[ ${perc} ]]; then 
+    cmd3+="--perc ${perc} "
+fi
+cmd3+="-w ${w}/component_colored/"
 
-while read line ; do
-    IFS=$'\t' read -ra cat_samples <<< "${line}"
-    echo "Processing category ${cat_samples[0]}"
-    
-    cmd3_i=$cmd3
-    tmp=2
-    if [[ ${minSamples} ]]; then
-        tmp=${minSamples}
-    fi
-    G=$(bash ${SOFT}/get_G.sh ${w}/unique_kmers_${cat_samples[0]}/log ${tmp})
-    if [[ $? -ne 0 ]]; then
-        error "Error during step 3!"
-        exit 1
-    fi
-    echo "Using G = $G"
-    tmp="${w}/unique_kmers_${cat_samples[0]}/kmers/filtered_${G}.kmers.bin "
-    cmd3_i+="--pivot $tmp"
-    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
-    cmd3_i+="-i $tmp"
-    cmd3_i+="-w ${w}/components_${cat_samples[0]}/"
-
-    
-    echo "${cmd3_i}"
-    ${cmd3_i}
-    if [[ $? -eq 0 ]]; then
-        echo "Processed category ${cat_samples[0]}"
-    else
-        error "Error during step 3!"
-        exit 1
-    fi
-done<${w}/categories_samples.tsv
+echo "${cmd3}"
+${cmd3}
 
 if [[ $? -eq 0 ]]; then
     comment "Step 3 finished successfully!"
@@ -246,6 +242,10 @@ else
     exit 1
 fi
 
+for ((i=0;i<n_cat;i++)); do
+    mkdir ${w}/components_${catNames[$i]}
+    ln -s ../component_colored/colored-components/components_color_${i}.bin ${w}/components_${catNames[$i]}/components.bin
+done
 
 
 # ==== Step 4 ====
@@ -324,6 +324,6 @@ else
 fi
 
 
-comment "MetaFX unique module finished successfully!"
+comment "MetaFX colored module finished successfully!"
 exit 0
 

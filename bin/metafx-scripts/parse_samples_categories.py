@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Utility for printing comments
+# Utility for obtaining categories and corresponding samples' basenames
 import sys
 import os
 import re

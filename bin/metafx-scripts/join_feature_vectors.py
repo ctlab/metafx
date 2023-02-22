@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # Utility for combining feature vectors into one table
 import sys
-import os
-import re
 import pandas as pd
 
 def load_cat(cat):
