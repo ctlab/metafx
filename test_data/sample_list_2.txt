@@ -1,0 +1,14 @@
+test_data/test/2.fasta.gz	B
+test_data/test/22_r1.fastq.gz	B
+test_data/test/22_r2.fastq.gz	B
+test_data/test/222.fa.gz	B
+test_data/3_1.fasta.bz2	C
+test_data/3_2.fasta.bz2	C
+test_data/33_1.fastq	C
+test_data/33_2.fastq	C
+test_data/333_1.fq	C
+test_data/333_2.fq	C
+test_data/3333_1.FQ	C
+test_data/3333_2.FQ	C
+test_data/33333_1.FASTQ	C
+test_data/33333_2.FASTQ	C
