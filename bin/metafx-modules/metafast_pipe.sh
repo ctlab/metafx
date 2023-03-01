@@ -178,7 +178,7 @@ if [[ ${kmers} ]]; then
     kmersDir="${kmers}"
     mkdir ${w}
     mkdir ${w}/kmer-counter-many
-    ln -s -t ${w}/kmer-counter-many $(pwd)/${kmersDir}
+    ln -s -t ${w}/kmer-counter-many ${kmersDir}
     touch ${w}/kmer-counter-many/SUCCESS
     print_args ${w}/in.properties
     print_args ${w}/kmer-counter-many/in.properties

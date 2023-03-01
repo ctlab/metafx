@@ -40,7 +40,7 @@ if [ "$1" = metafast ]; then
     time ${PIPES}/metafast_pipe.sh ${@:2}
 elif [ "$1" = metaspades ]; then
     echo metafx metaspades ${@:2}
-    time ${PIPES}/metaspades.sh ${@:2}
+    time ${PIPES}/metaspades_pipe.sh ${@:2}
 elif [ "$1" = unique ]; then
     echo metafx unique ${@:2}
     time ${PIPES}/unique.sh ${@:2}
