@@ -49,8 +49,7 @@ jobs:
         metafx stats -t 2 -m 6G -k 31 -i test_data/sample_list.txt -w wd_stats
     - name: metafx metaspades
       run: |
-        $CONDA/bin/conda create -n spades -c bioconda spades python=3.8
-        $CONDA/bin/conda activate spades
+        $CONDA/bin/conda env update --name base -c bioconda spades python=3.8
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         export PATH=bin:$PATH
