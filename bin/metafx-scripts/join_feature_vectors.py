@@ -2,11 +2,14 @@
 # Utility for combining feature vectors into one table
 import sys
 import pandas as pd
+import glob
 
 def load_cat(cat):
-    df_list = [pd.read_csv(wd + "/features_" + cat + "/vectors/" + file + ".breadth", header=None, index_col=None) for file in all_files]
+    #df_list = [pd.read_csv(wd + "/features_" + cat + "/vectors/" + file + ".breadth", header=None, index_col=None) for file in all_files]
+    all_files = glob.glob(wd + "/features_" + cat + "/vectors/" + "*.breadth")
+    df_list = [pd.read_csv(file, header=None, index_col=None) for file in all_files]
     data = pd.concat(df_list, axis=1)
-    data.columns = all_files
+    data.columns = [file.replace(wd + "/features_" + cat + "/vectors/", "").replace(".breadth", "") for file in all_files]
     data.index = [cat + "_" + str(i) for i in data.index]
     print("Found " + str(data.shape[0]) + " features for category " + cat)
     return data

@@ -168,6 +168,8 @@ while read line ; do
     
     if [[ ${minSamples} ]]; then
         cmd2_i+="--min-samples ${minSamples} "
+    elif [[ $(wc -w <<< "${cat_samples[1]}") -eq 1 ]]; then
+        cmd2_i+="--min-samples 1 "
     else
         cmd2_i+="--min-samples 2 "
     fi
@@ -212,13 +214,16 @@ while read line ; do
     echo "Processing category ${cat_samples[0]}"
     
     cmd3_i=$cmd3
-    tmp=2
     if [[ ${minSamples} ]]; then
         tmp=${minSamples}
+    elif [[ $(wc -w <<< "${cat_samples[1]}") -eq 1 ]]; then
+        tmp=1
+    else
+        tmp=2
     fi
     G=$(bash ${SOFT}/get_G.sh ${w}/unique_kmers_${cat_samples[0]}/log ${tmp})
     if [[ $? -ne 0 ]]; then
-        error "Error during step 3!"
+        error "Error during step 3! Cannot determine G value"
         exit 1
     fi
     echo "Using G = $G"
