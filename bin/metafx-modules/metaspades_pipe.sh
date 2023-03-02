@@ -160,7 +160,7 @@ while read line ; do
     
     echo "${cmd1_i}"
     echo "Log is saved to ${w}/spades_${samples[1]}.log"
-    ${cmd1_i} &> "${w}/spades_${samples[1]}.log"
+    ${cmd1_i} > "${w}/spades_${samples[1]}.log"
     if [[ $? -eq 0 ]]; then
         comment "Assembly results saved to: ${w}/spades_${samples[1]}"
     else
