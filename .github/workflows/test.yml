@@ -49,10 +49,10 @@ jobs:
         metafx stats -t 2 -m 6G -k 31 -i test_data/sample_list.txt -w wd_stats
     - name: metafx metaspades
       run: |
-        $CONDA/bin/conda env update --name base -c bioconda spades python=3.8
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        wget http://cab.spbu.ru/files/release3.15.5/SPAdes-3.15.5-Linux.tar.gz
+        tar -xzf SPAdes-3.15.5-Linux.tar.gz
         export PATH=bin:$PATH
+        export PATH=SPAdes-3.15.5-Linux/bin/:$PATH
         chmod +x bin/metafx
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
