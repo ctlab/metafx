@@ -20,6 +20,7 @@ help_message () {
     echo "    colored           Supervised feature extraction using group-colored de Bruijn graph"
     echo "    lda               Supervised feature extraction via Latent Dirichlet allocation model"
     echo ""
+    echo "    pca               PCA visualisation of samples based on extracted features"
     echo "    predict           Machine Learning methods for classification based on extracted features"
     echo ""
     echo "    -h | --help       Show this help message and exit"
@@ -50,12 +51,19 @@ elif [ "$1" = stats ]; then
 elif [ "$1" = colored ]; then
     echo metafx colored ${@:2}
     time ${PIPES}/colored.sh ${@:2}
+elif [ "$1" = pca ]; then
+    echo metafx pca ${@:2}
+    time ${PIPES}/pca.sh ${@:2}
 elif [ "$1" = lda ]; then
-    echo metafx lda ${@:2}
-    time ${PIPES}/lda.sh ${@:2}
+    echo "Not implemented error! Module is under development." 1>&2
+    exit 1
+    #echo metafx lda ${@:2}
+    #time ${PIPES}/lda.sh ${@:2}
 elif [ "$1" = predict ]; then
-    echo metafx predict ${@:2}
-    time ${PIPES}/predict.sh ${@:2}
+    echo "Not implemented error! Module is under development." 1>&2
+    exit 1
+    #echo metafx predict ${@:2}
+    #time ${PIPES}/predict.sh ${@:2}
 elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     help_message
     exit 0
