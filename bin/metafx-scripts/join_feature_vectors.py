@@ -18,7 +18,8 @@ def load_cat(cat, wd):
 
 if __name__ == "__main__":
     wd = sys.argv[1]
-    cat_samples = pd.read_csv(wd+"/categories_samples.tsv", sep="\t", header=None, index_col=None)
+    cat_file = sys.argv[2]
+    cat_samples = pd.read_csv(cat_file, sep="\t", header=None, index_col=None)
     cat_samples = cat_samples.fillna('')
     categories = cat_samples.iloc[:, 0]
     all_files = cat_samples.iloc[0, 1].split() + cat_samples.iloc[0, 2].split()

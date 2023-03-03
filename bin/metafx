@@ -21,7 +21,13 @@ help_message () {
     echo "    lda               Supervised feature extraction via Latent Dirichlet allocation model"
     echo ""
     echo "    pca               PCA visualisation of samples based on extracted features"
-    echo "    predict           Machine Learning methods for classification based on extracted features"
+    echo "    fit               Machine Learning methods to train classification model based on extracted features"
+    echo "    predict           Machine Learning methods to classify new samples based on pre-trained model"
+    echo "    fit_predict       Machine Learning methods to train classification model based on extracted features and immediately apply to classify new samples"
+    echo "    cv                Machine Learning methods to train classification model based on extracted features and check accuracy via cross-validation"
+    echo ""
+    echo "    calc_features     Module to count values for new samples based on previously extracted features"
+    echo "    extract_kmers     Module to extract k-mers from samples (to speed up multiple calculations)"
     echo ""
     echo "    -h | --help       Show this help message and exit"
     echo "    -v | --version    Show MetaFX version and exit"
@@ -51,15 +57,38 @@ elif [ "$1" = stats ]; then
 elif [ "$1" = colored ]; then
     echo metafx colored ${@:2}
     time ${PIPES}/colored.sh ${@:2}
-elif [ "$1" = pca ]; then
-    echo metafx pca ${@:2}
-    time ${PIPES}/pca.sh ${@:2}
 elif [ "$1" = lda ]; then
     echo "Not implemented error! Module is under development." 1>&2
     exit 1
     #echo metafx lda ${@:2}
     #time ${PIPES}/lda.sh ${@:2}
+elif [ "$1" = pca ]; then
+    echo metafx pca ${@:2}
+    time ${PIPES}/pca.sh ${@:2}
+elif [ "$1" = fit ]; then
+    echo "Not implemented error! Module is under development." 1>&2
+    exit 1
+    #echo metafx predict ${@:2}
+    #time ${PIPES}/predict.sh ${@:2}
 elif [ "$1" = predict ]; then
+    echo "Not implemented error! Module is under development." 1>&2
+    exit 1
+    #echo metafx predict ${@:2}
+    #time ${PIPES}/predict.sh ${@:2}
+elif [ "$1" = fit_predict ]; then
+    echo "Not implemented error! Module is under development." 1>&2
+    exit 1
+    #echo metafx predict ${@:2}
+    #time ${PIPES}/predict.sh ${@:2}
+elif [ "$1" = cv ]; then
+    echo "Not implemented error! Module is under development." 1>&2
+    exit 1
+    #echo metafx predict ${@:2}
+    #time ${PIPES}/predict.sh ${@:2}
+elif [ "$1" = calc_features ]; then
+    echo metafx calc_features ${@:2}
+    time ${PIPES}/calc_features.sh ${@:2}
+elif [ "$1" = extract_kmers ]; then
     echo "Not implemented error! Module is under development." 1>&2
     exit 1
     #echo metafx predict ${@:2}

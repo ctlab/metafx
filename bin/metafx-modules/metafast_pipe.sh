@@ -88,7 +88,7 @@ case $key in
     shift
     shift
     ;;
-    -i|--reads-file)
+    -i|--reads)
     shift
     i=""
     while [[ $1 ]] && [ ${1:0:1} != "-" ] 
@@ -207,11 +207,13 @@ fi
 # ==== Step 2 ====
 comment "Running step 2: creating feature table"
 
+mkdir ${w}/components_all
+ln -s -t ${w}/components_all/ ../component-cutter/components.bin
 
 mkdir ${w}/features_all
 echo "all	$(for f in ${w}/features-calculator/vectors/*.breadth ; do x=$(basename $f); echo ${x%.breadth} ; done | tr '\n' ' ')	" > ${w}/categories_samples.tsv
 ln -s ../features-calculator/vectors ${w}/features_all/vectors
-python3 ${SOFT}/join_feature_vectors.py ${w}
+python3 ${SOFT}/join_feature_vectors.py ${w} ${w}/categories_samples.tsv
 if [[ $? -eq 0 ]]; then
     echo "Feature table saved to ${w}/feature_table.tsv"
     comment "Step 2 finished successfully!"
@@ -228,7 +230,7 @@ comment "Running step 3: transforming binary components to fasta sequences (cont
 cmd3=$cmd
 cmd3+="-t comp2seq "
 
-cmd3+="-cf ${w}/component-cutter/components.bin "
+cmd3+="-cf ${w}/components_all/components.bin "
 cmd3+="-w ${w}/contigs_all/"
 
     

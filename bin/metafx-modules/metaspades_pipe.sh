@@ -58,7 +58,7 @@ case $key in
     separate=true
     shift
     ;;
-    -i|--reads-file)
+    -i|--reads)
     shift
     i=""
     while [[ $1 ]] && [ ${1:0:1} != "-" ] 
@@ -188,7 +188,7 @@ if [[ ${separate} ]]; then
     tmp=$(cut -d$" " -f2 <<< ${samples_spades} | tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
     tmp="$w/spades_${tmp// /\/contigs.fasta ${w}\/spades_}/contigs.fasta"
     cmd2+="-i ${tmp} "
-    cmd2+="-w $w/components"
+    cmd2+="-w $w/components_all"
     
     echo "${cmd2}"
     ${cmd2}
@@ -216,7 +216,7 @@ else
     tmp=$(cut -d$" " -f2 <<< ${samples_spades} | tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
     tmp="$w/spades_${tmp// /\/contigs.fasta ${w}\/spades_}/contigs.fasta"
     cmd2+="-i ${tmp} "
-    cmd2+="-w $w/components"
+    cmd2+="-w $w/components_all"
     
     echo "${cmd2}"
     ${cmd2}
@@ -235,7 +235,7 @@ comment "Running step 3: calculating features as coverage of components by sampl
 cmd3=$cmd
 cmd3+="-t features-calculator "
 
-cmd3+="-cm ${w}/components/components.bin "
+cmd3+="-cm ${w}/components_all/components.bin "
 if [[ ${kmers} ]]; then
     cmd3+="-ka ${kmers}/*.kmers.bin "
 else
@@ -263,7 +263,7 @@ rm -rf "${w}/spades_tmp_reads"
 mkdir ${w}/features_all
 echo "all	$(for f in ${w}/features-calculator/vectors/*.breadth ; do x=$(basename $f); echo ${x%.breadth} ; done | tr '\n' ' ')	" > ${w}/categories_samples.tsv
 ln -s ../features-calculator/vectors ${w}/features_all/vectors
-python3 ${SOFT}/join_feature_vectors.py ${w}
+python3 ${SOFT}/join_feature_vectors.py ${w} ${w}/categories_samples.tsv
 if [[ $? -eq 0 ]]; then
     echo "Feature table saved to ${w}/feature_table.tsv"
     comment "Step 3 finished successfully!"
@@ -336,7 +336,7 @@ else
     cmd6=$cmd
     cmd6+="-t comp2seq "
 
-    cmd6+="-cf ${w}/components/components.bin "
+    cmd6+="-cf ${w}/components_all/components.bin "
     cmd6+="-w ${w}/contigs_all/"
 
         

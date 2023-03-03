@@ -59,3 +59,10 @@ jobs:
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
         metafx metaspades -t 2 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades
+    - name: metafx calc_features
+      run: |
+        export PATH=bin:$PATH
+        chmod +x bin/metafx
+        chmod +x bin/metafx-modules/*
+        chmod +x bin/metafx-scripts/*
+        metafx calc_features -t 2 -m 6G -k 31 -i test_data/test_* -d wd_unique -w wd_calc_unique

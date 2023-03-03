@@ -279,7 +279,7 @@ while read line ; do
     fi
 done<${w}/categories_samples.tsv
 
-python3 ${SOFT}/join_feature_vectors.py ${w}
+python3 ${SOFT}/join_feature_vectors.py ${w} ${w}/categories_samples.tsv
 if [[ $? -eq 0 ]]; then
     echo "Feature table saved to ${w}/feature_table.tsv"
 else
