@@ -4,7 +4,8 @@ import sys
 import pandas as pd
 import glob
 
-def load_cat(cat):
+
+def load_cat(cat, wd):
     #df_list = [pd.read_csv(wd + "/features_" + cat + "/vectors/" + file + ".breadth", header=None, index_col=None) for file in all_files]
     all_files = glob.glob(wd + "/features_" + cat + "/vectors/" + "*.breadth")
     df_list = [pd.read_csv(file, header=None, index_col=None) for file in all_files]
@@ -15,17 +16,17 @@ def load_cat(cat):
     return data
 
 
-wd = sys.argv[1]
-cat_samples = pd.read_csv(wd+"/categories_samples.tsv", sep="\t", header=None, index_col=None)
-cat_samples = cat_samples.fillna('')
-categories = cat_samples.iloc[:, 0]
-all_files = cat_samples.iloc[0, 1].split() + cat_samples.iloc[0, 2].split()
+if __name__ == "__main__":
+    wd = sys.argv[1]
+    cat_samples = pd.read_csv(wd+"/categories_samples.tsv", sep="\t", header=None, index_col=None)
+    cat_samples = cat_samples.fillna('')
+    categories = cat_samples.iloc[:, 0]
+    all_files = cat_samples.iloc[0, 1].split() + cat_samples.iloc[0, 2].split()
 
+    subtables = []
+    for cat in categories:
+        subtables.append(load_cat(cat, wd))
 
-subtables = []
-for cat in categories:
-    subtables.append(load_cat(cat))
-
-feature_table = pd.concat(subtables, axis=0)
-feature_table.to_csv(wd+"/feature_table.tsv", sep="\t")
-print("Total " + str(feature_table.shape[0]) + " features found!")
+    feature_table = pd.concat(subtables, axis=0)
+    feature_table.to_csv(wd+"/feature_table.tsv", sep="\t")
+    print("Total " + str(feature_table.shape[0]) + " features found!")
