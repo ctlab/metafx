@@ -239,7 +239,15 @@ cmd3+="-cm ${w}/components/components.bin "
 if [[ ${kmers} ]]; then
     cmd3+="-ka ${kmers}/*.kmers.bin "
 else
-    cmd3+="-i ${i} "
+    mkdir ${w}/spades_tmp_reads
+    tmp=""
+    while read line ; do
+        IFS=$' ' read -ra samples <<< "${line}"
+        bname=$(basename "${samples[2]}")
+        cat ${samples[2]} ${samples[3]} > "${w}/spades_tmp_reads/${samples[1]}.${bname#*.}"
+        tmp+="${w}/spades_tmp_reads/${samples[1]}.${bname#*.} "
+    done<<<"${samples_spades}"
+    cmd3+="-i ${tmp} "
 fi
 cmd3+="-w ${w}/features-calculator/"
 
@@ -250,7 +258,7 @@ if [[ $? -ne 0 ]]; then
     error "Error during step 3"
     exit 1
 fi
-
+rm -rf "${w}/spades_tmp_reads"
 
 mkdir ${w}/features_all
 echo "all	$(for f in ${w}/features-calculator/vectors/*.breadth ; do x=$(basename $f); echo ${x%.breadth} ; done | tr '\n' ' ')	" > ${w}/categories_samples.tsv
