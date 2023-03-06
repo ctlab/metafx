@@ -173,6 +173,7 @@ fi
 comment "Running step 2: defining k-mers colors based on occurrences in categories"
 
 python3 ${SOFT}/parse_samples_categories.py ${i} > ${w}/categories_samples.tsv
+python3 ${SOFT}/get_samples_categories.py ${w}
 n_cat=$(wc -l < ${w}/categories_samples.tsv)
 if [[ ${n_cat} -lt 2 ]]; then
     echo "Found only ${n_cat} categories in ${i} file. Provide at least 2 categories of input samples!"

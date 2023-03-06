@@ -20,19 +20,18 @@ if __name__ == "__main__":
     showLabels = True if sys.argv[3] == "true" else False
     metadata = None
     if len(sys.argv) == 5:
-        metadata = pd.read_csv(sys.argv[4], sep="\t", header=None, index_col=0)
+        metadata = pd.read_csv(sys.argv[4], sep="\t", header=None, index_col=None, dtype=str)
 
     it = 0
     colors_dict = dict()
     meta_dict = dict(zip(features.columns, [None] * N))
     if metadata is not None:
-        for key, vals in metadata.iterrows():
-            for val in vals.iloc[0].split():
-                if val in meta_dict:
-                    meta_dict[val] = key
-                    if key not in colors_dict:
-                        colors_dict[key] = base_colors[it]
-                        it = (it + 1) % 9
+        for _, (sample, cat) in metadata.iterrows():
+            if sample in meta_dict:
+                meta_dict[sample] = cat
+                if cat not in colors_dict:
+                    colors_dict[cat] = base_colors[it]
+                    it = (it + 1) % 9
     if None in meta_dict.values():
         colors_dict[None] = default_color
 

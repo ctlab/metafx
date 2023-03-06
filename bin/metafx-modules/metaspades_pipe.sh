@@ -262,6 +262,7 @@ rm -rf "${w}/spades_tmp_reads"
 
 mkdir ${w}/features_all
 echo "all	$(for f in ${w}/features-calculator/vectors/*.breadth ; do x=$(basename $f); echo ${x%.breadth} ; done | tr '\n' ' ')	" > ${w}/categories_samples.tsv
+python3 ${SOFT}/get_samples_categories.py ${w}
 ln -s ../features-calculator/vectors ${w}/features_all/vectors
 python3 ${SOFT}/join_feature_vectors.py ${w} ${w}/categories_samples.tsv
 if [[ $? -eq 0 ]]; then

@@ -151,6 +151,7 @@ fi
 comment "Running step 2: extracting group-specific k-mers"
 
 python3 ${SOFT}/parse_samples_categories.py ${i} > ${w}/categories_samples.tsv
+python3 ${SOFT}/get_samples_categories.py ${w}
 tmp=$(wc -l < ${w}/categories_samples.tsv)
 if [[ $tmp -lt 2 ]]; then
     echo "Found only $tmp categories in ${i} file. Provide at least 2 categories of input samples!"

@@ -14,9 +14,9 @@ help_message () {
     echo "    -w | --work-dir       <dirname>    working directory [default: workDir/]"
     echo ""
     echo "Input parameters:"
-    echo "    -f | --feature-table  <filename>   File with feature table in tsv format: rows – features, columns – samples (\"workDir/feature_table.tsv\" can be used) [mandatory]"
-    echo "    -i | --metadata-file  <filename>   tab-separated file with 2 values in each row: <category>\t<samples> (\"workDir/categories_samples.tsv\" can be used, 3rd column ignored) [optional, default: None]"
-    echo "         --name           <filename>   Name of output image in workDir [optional, default: pca]"
+    echo "    -f | --feature-table  <filename>   file with feature table in tsv format: rows – features, columns – samples (\"workDir/feature_table.tsv\" can be used) [mandatory]"
+    echo "    -i | --metadata-file  <filename>   tab-separated file with 2 values in each row: <sample>\t<category> (\"workDir/samples_categories.tsv\" can be used) [optional, default: None]"
+    echo "         --name           <filename>   name of output image in workDir [optional, default: pca]"
     echo "         --show                        if TRUE print samples' names on plot [optional, default: False]"
     echo "";}
 
@@ -87,9 +87,8 @@ mkdir -p ${w}
 if [[ ${metadataFile} ]]; then
     n_cols=$(head -n 1 ${metadataFile} | awk -F'\t' '{print NF}')
     if [[ ${n_cols} -ne 2 ]]; then
-        warning "Metadata file ${metadataFile} contains ${n_cols} columns. Will use two first columns as category name and list of samples."
-        cut -d$'\t' -f 1,2 ${metadataFile} > ${w}/tmp_metadata.tsv
-        metadataFile="${w}/tmp_metadata.tsv"
+        error "Metadata file ${metadataFile} contains ${n_cols} columns. It should have two columns: <sample>\t<category>"
+        exit 1
     fi
 else
     metadataFile=""
