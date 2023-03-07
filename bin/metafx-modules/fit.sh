@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 ##########################################################################################
-#####    MetaFX pca module – visualisation of samples based on extracted feature    ######
+##### MetaFX fit module – Machine Learning to train classifier on extracted features #####
 ##########################################################################################
 
 help_message () {
     echo ""
     echo "$(metafx -v)"
-    echo "MetaFX pca module – PCA dimensionality reduction and visualisation of samples based on extracted features"
-    echo "Usage: metafx pca [<Launch options>] [<Input parameters>]"
+    echo "MetaFX fit module – Machine Learning methods to train classification model based on extracted features"
+    echo "Usage: metafx fit [<Launch options>] [<Input parameters>]"
     echo ""
     echo "Launch options:"
     echo "    -h | --help                        show this help message and exit"
@@ -15,9 +15,8 @@ help_message () {
     echo ""
     echo "Input parameters:"
     echo "    -f | --feature-table  <filename>   file with feature table in tsv format: rows – features, columns – samples (\"workDir/feature_table.tsv\" can be used) [mandatory]"
-    echo "    -i | --metadata-file  <filename>   tab-separated file with 2 values in each row: <sample>\t<category> (\"workDir/samples_categories.tsv\" can be used) [optional, default: None]"
-    echo "         --name           <filename>   name of output image in workDir [optional, default: pca]"
-    echo "         --show                        if TRUE print samples' names on plot [optional, default: False]"
+    echo "    -i | --metadata-file  <filename>   tab-separated file with 2 values in each row: <sample>\t<category> (\"workDir/samples_categories.tsv\" can be used) [mandatory]"
+    echo "         --name           <filename>   name of output trained model in workDir [optional, default: rf_model]"
     echo "";}
 
 
@@ -60,10 +59,6 @@ case $key in
     shift
     shift
     ;;
-    --show)
-    show="true"
-    shift
-    ;;
     -w|--work-dir)
     w="$2"
     shift
@@ -77,36 +72,33 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-comment "Creating PCA visualisation"
+comment "Training classification model"
 if [[ ! -f ${featureFile} ]]; then
     error "Feature table file ${featureFile} does not exist!"
     exit 1
 fi
 
-mkdir -p ${w}
-if [[ ${metadataFile} ]]; then
-    n_cols=$(head -n 1 ${metadataFile} | awk -F'\t' '{print NF}')
-    if [[ ${n_cols} -ne 2 ]]; then
-        error "Metadata file ${metadataFile} contains ${n_cols} columns. It should have two columns: <sample>\t<category>"
-        exit 1
-    fi
-else
-    metadataFile=""
+if [[ ! -f ${metadataFile} ]]; then
+    error "Metadata file ${metadataFile} does not exist!"
+    exit 1
 fi
+
+mkdir -p ${w}
+
 
 if [[ ${outputName} ]]; then
     outputName="${w}/${outputName}"
 else
-    outputName="${w}/pca"
+    outputName="${w}/rf_model"
 fi
 
 
-python3 ${SOFT}/pca.py ${featureFile} ${outputName} ${show} ${metadataFile}
+python3 ${SOFT}/fit.py ${featureFile} ${outputName} ${metadataFile}
 if [[ $? -ne 0 ]]; then
-    error "PCA visualisation failed!"
+    error "Classification model training failed!"
     exit 1
 else
-    echo "PCA visualisation saved to ${outputName}.png"
+    echo "Trained model saved to ${outputName}.joblib"
 fi
 
 

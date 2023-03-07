@@ -26,15 +26,13 @@ jobs:
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
         metafx unique -t 2 -m 6G -k 31 -i test_data/sample_list.txt -w wd_unique
-    - name: metafx metafast & metafx pca
+    - name: metafx metafast
       run: |
         export PATH=bin:$PATH
         chmod +x bin/metafx
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
         metafx metafast -t 2 -m 6G -k 31 -i test_data/test/* test_data/3* test_data/4* -b1 200 -b2 5000 -l 50 -w wd_metafast
-        metafx unique -t 2 -m 6G -k 31 -i test_data/sample_list_train.txt -w wd_unique_pca --kmers-dir wd_metafast/kmer-counter-many/kmers
-        metafx pca -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv --show -w wd_pca
     - name: metafx colored
       run: |
         export PATH=bin:$PATH
@@ -66,3 +64,18 @@ jobs:
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
         metafx calc_features -t 2 -m 6G -k 31 -i test_data/test_* -d wd_unique -w wd_calc_unique
+    - name: metafx pca
+      run: |
+        export PATH=bin:$PATH
+        chmod +x bin/metafx
+        chmod +x bin/metafx-modules/*
+        chmod +x bin/metafx-scripts/*
+        metafx unique -t 2 -m 6G -k 31 -i test_data/sample_list_train.txt -w wd_unique_pca --kmers-dir wd_metafast/kmer-counter-many/kmers
+        metafx pca -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv --show -w wd_pca
+    - name: metafx fit
+      run: |
+        export PATH=bin:$PATH
+        chmod +x bin/metafx
+        chmod +x bin/metafx-modules/*
+        chmod +x bin/metafx-scripts/*
+        metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit

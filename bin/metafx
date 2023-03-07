@@ -66,10 +66,8 @@ elif [ "$1" = pca ]; then
     echo metafx pca ${@:2}
     time ${PIPES}/pca.sh ${@:2}
 elif [ "$1" = fit ]; then
-    echo "Not implemented error! Module is under development." 1>&2
-    exit 1
-    #echo metafx predict ${@:2}
-    #time ${PIPES}/predict.sh ${@:2}
+    echo metafx fit ${@:2}
+    time ${PIPES}/fit.sh ${@:2}
 elif [ "$1" = predict ]; then
     echo "Not implemented error! Module is under development." 1>&2
     exit 1
