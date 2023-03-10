@@ -85,4 +85,4 @@ jobs:
         chmod +x bin/metafx
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
-        metafx cv -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_cv -n 3 --grid -t 6
+        metafx cv -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_cv -n 2 --grid -t 6
