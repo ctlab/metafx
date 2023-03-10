@@ -57,13 +57,6 @@ jobs:
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
         metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades
-    - name: metafx calc_features
-      run: |
-        export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
-        metafx calc_features -t 6 -m 6G -k 31 -i test_data/test_* -d wd_unique -w wd_calc_unique
     - name: metafx pca
       run: |
         export PATH=bin:$PATH
@@ -86,6 +79,13 @@ jobs:
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
         metafx cv -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_cv -n 2 --grid -t 6
+    - name: metafx calc_features
+      run: |
+        export PATH=bin:$PATH
+        chmod +x bin/metafx
+        chmod +x bin/metafx-modules/*
+        chmod +x bin/metafx-scripts/*
+        metafx calc_features -t 6 -m 6G -k 31 -i test_data/test_* -d wd_unique_pca -w wd_calc_features
     - name: metafx predict
       run: |
         export PATH=bin:$PATH
@@ -93,4 +93,4 @@ jobs:
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
         echo -e "test_A\tA\ntest_B\tB\ntest_C\tC\ntest_D\tD\n" > test_labels.tsv
-        metafx predict -f wd_calc_unique/feature_table.tsv --model wd_cv/rf_model_cv.joblib -w wd_predict -i test_labels.tsv
+        metafx predict -f wd_calc_features/feature_table.tsv --model wd_cv/rf_model_cv.joblib -w wd_predict -i test_labels.tsv
