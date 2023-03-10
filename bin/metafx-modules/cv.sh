@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 ##########################################################################################
-##### MetaFX fit module – Machine Learning to train classifier on extracted features #####
+#####    MetaFX cv module – Machine Learning to train classifier & check accuracy    #####
 ##########################################################################################
 
 help_message () {
     echo ""
     echo "$(metafx -v)"
-    echo "MetaFX fit module – Machine Learning methods to train classification model based on extracted features"
-    echo "Usage: metafx fit [<Launch options>] [<Input parameters>]"
+    echo "MetaFX cv module – Machine Learning methods to train classification model based on extracted features and check accuracy via cross-validation"
+    echo "Usage: metafx cv [<Launch options>] [<Input parameters>]"
     echo ""
     echo "Launch options:"
     echo "    -h | --help                        show this help message and exit"
+    echo "    -t | --threads       <int>        number of threads to use [default: all]"
     echo "    -w | --work-dir       <dirname>    working directory [default: workDir/]"
     echo ""
     echo "Input parameters:"
     echo "    -f | --feature-table  <filename>   file with feature table in tsv format: rows – features, columns – samples (\"workDir/feature_table.tsv\" can be used) [mandatory]"
     echo "    -i | --metadata-file  <filename>   tab-separated file with 2 values in each row: <sample>\t<category> (\"workDir/samples_categories.tsv\" can be used) [mandatory]"
-    echo "         --name           <filename>   name of output trained model in workDir [optional, default: rf_model]"
+    echo "    -n | --n-splits       <int>        number of folds in cross-validation. Must be at least 2. [optional, default: 5]"
+    echo "         --name           <filename>   name of output trained model in workDir [optional, default: rf_model_cv]"
+    echo "         --grid                        if TRUE, perform grid search of optimal parameters for classification model [optional, default: False]"
     echo "";}
 
 
@@ -34,6 +37,9 @@ error   () { ${SOFT}/pretty_print.py "$1" "*"; exit 1; }
 
 
 w="workDir"
+nSplits=5
+nThreads=1
+grid="false"
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
@@ -53,8 +59,22 @@ case $key in
     shift
     shift
     ;;
+    -n|--n-splits)
+    nSplits="$2"
+    shift
+    shift
+    ;;
     --name)
     outputName="$2"
+    shift
+    shift
+    ;;
+    --grid)
+    grid="true"
+    shift
+    ;;
+    -t|--threads)
+    nThreads="$2"
     shift
     shift
     ;;
@@ -71,7 +91,7 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-comment "Training classification model"
+comment "Training classification model with cross-validation"
 if [[ ! -f ${featureFile} ]]; then
     error "Feature table file ${featureFile} does not exist!"
     exit 1
@@ -88,11 +108,11 @@ mkdir -p ${w}
 if [[ ${outputName} ]]; then
     outputName="${w}/${outputName}"
 else
-    outputName="${w}/rf_model"
+    outputName="${w}/rf_model_cv"
 fi
 
 
-python3 ${SOFT}/fit.py ${featureFile} ${outputName} ${metadataFile}
+python3 ${SOFT}/cv.py ${featureFile} ${outputName} ${metadataFile} ${nSplits} ${grid} ${nThreads}
 if [[ $? -ne 0 ]]; then
     error "Classification model training failed!"
     exit 1
@@ -101,5 +121,5 @@ else
 fi
 
 
-comment "MetaFX pca module finished successfully!"
+comment "MetaFX cv module finished successfully!"
 exit 0

@@ -79,10 +79,8 @@ elif [ "$1" = fit_predict ]; then
     #echo metafx predict ${@:2}
     #time ${PIPES}/predict.sh ${@:2}
 elif [ "$1" = cv ]; then
-    echo "Not implemented error! Module is under development." 1>&2
-    exit 1
-    #echo metafx predict ${@:2}
-    #time ${PIPES}/predict.sh ${@:2}
+    echo metafx cv ${@:2}
+    time ${PIPES}/cv.sh ${@:2}
 elif [ "$1" = calc_features ]; then
     echo metafx calc_features ${@:2}
     time ${PIPES}/calc_features.sh ${@:2}
