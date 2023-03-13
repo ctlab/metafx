@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 ##########################################################################################
-##### MetaFX fit module – Machine Learning to train classifier on extracted features #####
+### MetaFX fit_predict module – Machine Learning to train classifier and predict labels ##
 ##########################################################################################
 
 help_message () {
     echo ""
     echo "$(metafx -v)"
-    echo "MetaFX fit module – Machine Learning methods to train classification model based on extracted features"
-    echo "Usage: metafx fit [<Launch options>] [<Input parameters>]"
+    echo "MetaFX fit_predict module – Machine Learning methods to train classification model based on extracted features and immediately apply it to classify new samples"
+    echo "Usage: metafx fit_predict [<Launch options>] [<Input parameters>]"
+    echo "Use samples present in `metadata-file` to train classifier and predict labels for the rest samples in `feature-table`"
     echo ""
     echo "Launch options:"
     echo "    -h | --help                        show this help message and exit"
@@ -16,7 +17,7 @@ help_message () {
     echo "Input parameters:"
     echo "    -f | --feature-table  <filename>   file with feature table in tsv format: rows – features, columns – samples (\"workDir/feature_table.tsv\" can be used) [mandatory]"
     echo "    -i | --metadata-file  <filename>   tab-separated file with 2 values in each row: <sample>\t<category> (\"workDir/samples_categories.tsv\" can be used) [mandatory]"
-    echo "         --name           <filename>   name of output trained model in workDir [optional, default: rf_model]"
+    echo "         --name           <filename>   name of output files in workDir [optional, default: model]"
     echo "";}
 
 
@@ -71,7 +72,7 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-comment "Training classification model"
+comment "Training classification model and predicting new labels"
 if [[ ! -f ${featureFile} ]]; then
     error "Feature table file ${featureFile} does not exist!"
     exit 1
@@ -88,11 +89,11 @@ mkdir -p ${w}
 if [[ ${outputName} ]]; then
     outputName="${w}/${outputName}"
 else
-    outputName="${w}/rf_model"
+    outputName="${w}/model"
 fi
 
 
-python3 ${SOFT}/fit.py ${featureFile} ${outputName} ${metadataFile}
+python3 ${SOFT}/fit_predict.py ${featureFile} ${outputName} ${metadataFile}
 if [[ $? -ne 0 ]]; then
     error "Classification model training failed!"
     exit 1
@@ -101,5 +102,5 @@ else
 fi
 
 
-comment "MetaFX fit module finished successfully!"
+comment "MetaFX fit_predict module finished successfully!"
 exit 0
