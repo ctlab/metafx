@@ -42,6 +42,8 @@ if __name__ == "__main__":
             print("\t", k, "=", v)
         print()
         dump(clf.best_estimator_, outName+".joblib")
+        print("Model accuracy after training:")
+        print(classification_report(y, clf.best_estimator_.predict(X)))
     else: # performing cross-validation
         cv = StratifiedKFold(n_splits=nFolds)
         y_tests = []
@@ -57,6 +59,9 @@ if __name__ == "__main__":
         print("Model accuracy on cross-validation:")
         print(classification_report(y_tests, y_preds))
 
-    model = RandomForestClassifier(n_estimators=100)
-    model.fit(X, y)
-    dump(model, outName+".joblib")
+        model = RandomForestClassifier(n_estimators=100)
+        model.fit(X, y)
+        dump(model, outName+".joblib")
+        print("Model accuracy after training:")
+        print(classification_report(y, model.predict(X)))
+

@@ -11,7 +11,7 @@ help_message () {
     echo ""
     echo "Launch options:"
     echo "    -h | --help                        show this help message and exit"
-    echo "    -t | --threads       <int>        number of threads to use [default: all]"
+    echo "    -t | --threads        <int>        number of threads to use [default: 1]"
     echo "    -w | --work-dir       <dirname>    working directory [default: workDir/]"
     echo ""
     echo "Input parameters:"
