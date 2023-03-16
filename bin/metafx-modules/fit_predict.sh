@@ -8,7 +8,7 @@ help_message () {
     echo "$(metafx -v)"
     echo "MetaFX fit_predict module – Machine Learning methods to train classification model based on extracted features and immediately apply it to classify new samples"
     echo "Usage: metafx fit_predict [<Launch options>] [<Input parameters>]"
-    echo "Use samples present in `metadata-file` to train classifier and predict labels for the rest samples in `feature-table`"
+    echo "Use samples present in 'metadata-file' to train classifier and predict labels for the rest samples in 'feature-table'"
     echo ""
     echo "Launch options:"
     echo "    -h | --help                        show this help message and exit"
