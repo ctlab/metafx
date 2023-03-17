@@ -35,8 +35,10 @@ if __name__ == "__main__":
                      }
         clf = GridSearchCV(model, parameters, scoring='balanced_accuracy', cv=nFolds, verbose=1, n_jobs=nThreads)
         clf.fit(X, y)
+        df_grid = pd.DataFrame.from_dict(clf.cv_results_).filter(regex='param_.*|mean_test_score|std_test_score|rank_test_score')
+        df_grid = df_grid.sort_values(by="rank_test_score", kind="mergesort")
         print("\nGrid search cross-validation accuracy:")
-        print(pd.DataFrame.from_dict(clf.cv_results_).filter(regex='param_.*|mean_test_score|std_test_score|rank_test_score').to_string())
+        print(df_grid.head(10).to_string(index=False), "."*88, df_grid.tail(10).to_string(index=False), sep="\n")
         print("\nSelected parameters for best Random Forest classifier:")
         for k, v in clf.best_params_.items():
             print("\t", k, "=", v)
