@@ -85,7 +85,7 @@ jobs:
         chmod +x bin/metafx
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
-        metafx calc_features -t 6 -m 6G -k 31 -i test_data/test_* -d wd_unique_pca -w wd_calc_features
+        metafx calc_features -t 6 -m 6G -k 31 -i test_data/test_*.fastq.gz -d wd_unique_pca -w wd_calc_features
     - name: metafx predict
       run: |
         export PATH=bin:$PATH
