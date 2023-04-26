@@ -21,7 +21,7 @@ help_message () {
     echo "    -b  | --bad-frequency <int>        maximal frequency for a k-mer to be assumed erroneous [default: 1]"
     echo "    -l  | --min-seq-len   <int>        minimal sequence length to be added to a component (in nucleotides) [default: 100]"
     echo "    -b1 | --min-comp-size <int>        minimum size of extracted components (features) in k-mers [default: 1000]"
-    echo "    -b2 | --max-comp-size <int>        maximum size of extracted components (features) in k-mers [default: 1000]"
+    echo "    -b2 | --max-comp-size <int>        maximum size of extracted components (features) in k-mers [default: 10000]"
     echo "          --kmers-dir     <dirname>    directory with pre-computed k-mers for samples in binary format [optional, if set '-i' can be omitted]"
     echo "";}
 
