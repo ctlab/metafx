@@ -12,7 +12,7 @@ Here is a short version of it.
 
 ## Table of contents
 
-  * [Idea of MetaFX](#idea-of-meta-fx)
+  * [Idea of MetaFX](#idea-of-metafx)
   * [Installation](#installation)
   * [Running instructions](#running-instructions) 
   * [Examples](#examples)
