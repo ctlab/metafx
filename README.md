@@ -86,7 +86,7 @@ Here is presented a minimal example of data analysis with MetaFX algorithms:
 #### Step 1. Extract features from samples of three categories
 
 ```shell
-metafx unique -t 2 -m 1G -w wd_unique -k 31 -i test_data/sample_list_train.tx
+metafx unique -t 2 -m 1G -w wd_unique -k 31 -i test_data/sample_list_train.txt
 ```
 
 ##### Input parameters
