@@ -74,6 +74,8 @@ To view the list of supported pipelines run `metafx -h` or `metafx --help`.
 
 To view help for launch options and input parameters for selected _pipeline_ run `metafx <pipeline> -h` or `metafx <pipeline> --help`.
 
+MetaFX supports both single-end and paired-end input files. For correct detection of paired-end reads, files should be named with suffixes "_R1"&"_R2" or "_r1"&"_r2" after sample name before extension. For example, `sample_r1.fastq`&`sample_r2.fastq`, or `reads_R1.fq.gz`&`reads_R2.fq.gz`.
+
 By running MetaFX a working directory is created (by default `./workDir/`).
 All intermediate files and final results are saved there.
 
