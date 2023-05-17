@@ -23,6 +23,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Install coreutils (macOS)
+      if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
+      run: |
+        brew update
+        brew install coreutils
     - name: metafx unique
       run: |
         export PATH=bin:$PATH
