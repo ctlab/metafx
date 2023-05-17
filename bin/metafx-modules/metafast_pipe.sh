@@ -178,7 +178,8 @@ if [[ ${kmers} ]]; then
     kmersDir="${kmers}"
     mkdir ${w}
     mkdir ${w}/kmer-counter-many
-    ln -s -t ${w}/kmer-counter-many ${kmersDir}
+    mkdir ${w}/kmer-counter-many/kmers
+    ln -s `realpath ${kmersDir}`/*.kmers.bin ${w}/kmer-counter-many/kmers/
     touch ${w}/kmer-counter-many/SUCCESS
     print_args ${w}/in.properties
     print_args ${w}/kmer-counter-many/in.properties
@@ -208,12 +209,13 @@ fi
 comment "Running step 2: creating feature table"
 
 mkdir ${w}/components_all
-ln -s -t ${w}/components_all/ ../component-cutter/components.bin
+ln -s `realpath $w`/component-cutter/components.bin ${w}/components_all
 
 mkdir ${w}/features_all
+mkdir ${w}/features_all/vectors
 echo "all	$(for f in ${w}/features-calculator/vectors/*.breadth ; do x=$(basename $f); echo ${x%.breadth} ; done | tr '\n' ' ')	" > ${w}/categories_samples.tsv
 python3 ${SOFT}/get_samples_categories.py ${w}
-ln -s ../features-calculator/vectors ${w}/features_all/vectors
+ln -s `realpath $w`/features-calculator/vectors/* ${w}/features_all/vectors
 python3 ${SOFT}/join_feature_vectors.py ${w} ${w}/categories_samples.tsv
 if [[ $? -eq 0 ]]; then
     echo "Feature table saved to ${w}/feature_table.tsv"

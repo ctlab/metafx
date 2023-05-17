@@ -245,7 +245,7 @@ fi
 
 for ((i=0;i<n_cat;i++)); do
     mkdir ${w}/components_${catNames[$i]}
-    ln -s ../component_colored/colored-components/components_color_${i}.bin ${w}/components_${catNames[$i]}/components.bin
+    ln -s `realpath $w`/component_colored/colored-components/components_color_${i}.bin ${w}/components_${catNames[$i]}/components.bin
 done
 
 

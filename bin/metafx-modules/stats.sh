@@ -198,7 +198,7 @@ if [[ ${n_cat} -eq 2 ]]; then # 2 categories
 
     mkdir ${w}/statistic_kmers_${cat_names[1]}
     mkdir ${w}/statistic_kmers_${cat_names[1]}/kmers
-    ln -s ../../statistic_kmers_${cat_names[0]}/kmers/filtered_groupB.kmers.bin ${w}/statistic_kmers_${cat_names[1]}/kmers/filtered_groupA.kmers.bin
+    ln -s `realpath $w`/statistic_kmers_${cat_names[0]}/kmers/filtered_groupB.kmers.bin ${w}/statistic_kmers_${cat_names[1]}/kmers/filtered_groupA.kmers.bin
 
 elif [[ ${n_cat} -eq 3 ]]; then # 3 categories
     cmd2+="-t stats-kmers-3 "
@@ -232,10 +232,10 @@ elif [[ ${n_cat} -eq 3 ]]; then # 3 categories
 
     mkdir ${w}/statistic_kmers_${cat_names[1]}
     mkdir ${w}/statistic_kmers_${cat_names[1]}/kmers
-    ln -s ../../statistic_kmers_${cat_names[0]}/kmers/filtered_groupB.kmers.bin ${w}/statistic_kmers_${cat_names[1]}/kmers/filtered_groupA.kmers.bin
+    ln -s `realpath $w`/statistic_kmers_${cat_names[0]}/kmers/filtered_groupB.kmers.bin ${w}/statistic_kmers_${cat_names[1]}/kmers/filtered_groupA.kmers.bin
     mkdir ${w}/statistic_kmers_${cat_names[2]}
     mkdir ${w}/statistic_kmers_${cat_names[2]}/kmers
-    ln -s ../../statistic_kmers_${cat_names[0]}/kmers/filtered_groupC.kmers.bin ${w}/statistic_kmers_${cat_names[2]}/kmers/filtered_groupA.kmers.bin
+    ln -s `realpath $w`/statistic_kmers_${cat_names[0]}/kmers/filtered_groupC.kmers.bin ${w}/statistic_kmers_${cat_names[2]}/kmers/filtered_groupA.kmers.bin
 else # 4+ categories
     cmd2+="-t stats-kmers "
     while read line ; do
