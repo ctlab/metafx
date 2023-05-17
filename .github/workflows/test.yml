@@ -7,7 +7,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-12, macos-11]
+    
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v3
@@ -47,7 +51,19 @@ jobs:
         chmod +x bin/metafx-modules/*
         chmod +x bin/metafx-scripts/*
         metafx stats -t 6 -m 6G -k 31 -i test_data/sample_list.txt -w wd_stats
-    - name: metafx metaspades
+    - name: metafx metaspades (macOS)
+      if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
+      run: |
+        curl http://cab.spbu.ru/files/release3.15.5/SPAdes-3.15.5-Darwin.tar.gz -o SPAdes-3.15.5-Darwin.tar.gz
+        tar -zxf SPAdes-3.15.5-Darwin.tar.gz
+        export PATH=bin:$PATH
+        export PATH=SPAdes-3.15.5-Darwin/bin/:$PATH
+        chmod +x bin/metafx
+        chmod +x bin/metafx-modules/*
+        chmod +x bin/metafx-scripts/*
+        metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades
+    - name: metafx metaspades (Linux)
+      if : matrix.os == 'ubuntu-20.04'
       run: |
         wget http://cab.spbu.ru/files/release3.15.5/SPAdes-3.15.5-Linux.tar.gz
         tar -xzf SPAdes-3.15.5-Linux.tar.gz

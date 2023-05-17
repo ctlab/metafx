@@ -33,6 +33,8 @@ help_message () {
     echo "    -v | --version    Show MetaFX version and exit"
     echo "";}
 
+timestamp=`date +%s`
+LOGFILE="metafx_${timestamp}.log"
 
 # Paths to pipelines and scripts
 mfx_path=$(which metafx)
@@ -43,43 +45,54 @@ PIPES=${bin_path}/metafx-modules
 comment () { ${SOFT}/pretty_print.py "$1" "-"; }
 
 if [ "$1" = metafast ]; then
-    echo metafx metafast ${@:2}
-    time ${PIPES}/metafast_pipe.sh ${@:2}
+    echo metafx metafast ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/metafast_pipe.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = metaspades ]; then
-    echo metafx metaspades ${@:2}
-    time ${PIPES}/metaspades_pipe.sh ${@:2}
+    echo metafx metaspades ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/metaspades_pipe.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = unique ]; then
-    echo metafx unique ${@:2}
-    time ${PIPES}/unique.sh ${@:2}
+    echo metafx unique ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/unique.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = stats ]; then
-    echo metafx stats ${@:2}
-    time ${PIPES}/stats.sh ${@:2}
+    echo metafx stats ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/stats.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = colored ]; then
-    echo metafx colored ${@:2}
-    time ${PIPES}/colored.sh ${@:2}
+    echo metafx colored ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/colored.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = lda ]; then
     echo "Not implemented error! Module is under development."
     exit 1
     #echo metafx lda ${@:2}
     #time ${PIPES}/lda.sh ${@:2}
 elif [ "$1" = pca ]; then
-    echo metafx pca ${@:2}
-    time ${PIPES}/pca.sh ${@:2}
+    echo metafx pca ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/pca.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = fit ]; then
-    echo metafx fit ${@:2}
-    time ${PIPES}/fit.sh ${@:2}
+    echo metafx fit ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/fit.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = predict ]; then
-    echo metafx predict ${@:2}
-    time ${PIPES}/predict.sh ${@:2}
+    echo metafx predict ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/predict.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = fit_predict ]; then
-    echo metafx fit_predict ${@:2}
-    time ${PIPES}/fit_predict.sh ${@:2}
+    echo metafx fit_predict ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/fit_predict.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = cv ]; then
-    echo metafx cv ${@:2}
-    time ${PIPES}/cv.sh ${@:2}
+    echo metafx cv ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/cv.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = calc_features ]; then
-    echo metafx calc_features ${@:2}
-    time ${PIPES}/calc_features.sh ${@:2}
+    echo metafx calc_features ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/calc_features.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = extract_kmers ]; then
     echo "Not implemented error! Module is under development."
     exit 1
