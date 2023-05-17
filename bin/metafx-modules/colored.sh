@@ -191,7 +191,7 @@ IFS=$'\n' read -rd '' -a catNames <<< "$(python3 ${SOFT}/get_samples_labels_for_
 cmd2=$cmd
 cmd2+="-t kmers-color "
 tmp=$(cut -d$'\t' -f2 ${w}/categories_samples.tsv | tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
-tmp="${kmersDir}/${tmp// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+tmp="${kmersDir}/${tmp// /.kmers.bin ${kmersDir}/}.kmers.bin "
 cmd2+="-kf ${tmp} "
 cmd2+="--class ${w}/samples_labels.tsv "
 if [[ ${b} ]]; then

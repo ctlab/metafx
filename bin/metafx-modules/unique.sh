@@ -180,9 +180,9 @@ while read line ; do
         cmd2_i+="--max-samples $(( $(wc -w <<< "${cat_samples[1]}") / 2 + 1)) "
     fi
     
-    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
     cmd2_i+="-i $tmp"
-    tmp="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+    tmp="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}/}.kmers.bin "
     cmd2_i+="--filter-kmers $tmp"
     cmd2_i+="-w ${w}/unique_kmers_${cat_samples[0]}/"
 
@@ -230,7 +230,7 @@ while read line ; do
     echo "Using G = $G"
     tmp="${w}/unique_kmers_${cat_samples[0]}/kmers/filtered_${G}.kmers.bin "
     cmd3_i+="--pivot $tmp"
-    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
     cmd3_i+="-i $tmp"
     cmd3_i+="-w ${w}/components_${cat_samples[0]}/"
 

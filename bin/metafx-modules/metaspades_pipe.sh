@@ -186,7 +186,7 @@ if [[ ${separate} ]]; then
     cmd2+="-t seq2comp "
     
     tmp=$(cut -d$" " -f2 <<< ${samples_spades} | tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
-    tmp="$w/spades_${tmp// /\/contigs.fasta ${w}\/spades_}/contigs.fasta"
+    tmp="$w/spades_${tmp// //contigs.fasta ${w}/spades_}/contigs.fasta"
     cmd2+="-i ${tmp} "
     cmd2+="-w $w/components_all"
     
@@ -214,7 +214,7 @@ else
     fi
     
     tmp=$(cut -d$" " -f2 <<< ${samples_spades} | tr '\n' ' ' | sed -e 's/[[:space:]]*$//')
-    tmp="$w/spades_${tmp// /\/contigs.fasta ${w}\/spades_}/contigs.fasta"
+    tmp="$w/spades_${tmp// //contigs.fasta ${w}/spades_}/contigs.fasta"
     cmd2+="-i ${tmp} "
     cmd2+="-w $w/components_all"
     

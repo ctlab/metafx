@@ -181,9 +181,9 @@ if [[ ${n_cat} -eq 2 ]]; then # 2 categories
     IFS=$'\n' read -d '' -ra cat_samples <<< "$(cut -d$'\t' -f2 ${w}/categories_samples.tsv)"
     IFS=$'\n' read -d '' -ra cat_names <<< "$(cut -d$'\t' -f1 ${w}/categories_samples.tsv)"
     
-    tmp="${kmersDir}/${cat_samples[0]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+    tmp="${kmersDir}/${cat_samples[0]// /.kmers.bin ${kmersDir}/}.kmers.bin "
     cmd2+="--a-kmers $tmp"
-    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
     cmd2+="--b-kmers $tmp"
     cmd2+="-w ${w}/statistic_kmers_${cat_names[0]}/"
     
@@ -213,11 +213,11 @@ elif [[ ${n_cat} -eq 3 ]]; then # 3 categories
     IFS=$'\n' read -d '' -ra cat_samples <<< "$(cut -d$'\t' -f2 ${w}/categories_samples.tsv)"
     IFS=$'\n' read -d '' -ra cat_names <<< "$(cut -d$'\t' -f1 ${w}/categories_samples.tsv)"
     
-    tmp="${kmersDir}/${cat_samples[0]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+    tmp="${kmersDir}/${cat_samples[0]// /.kmers.bin ${kmersDir}/}.kmers.bin "
     cmd2+="--a-kmers $tmp"
-    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
     cmd2+="--b-kmers $tmp"
-    tmp="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+    tmp="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}/}.kmers.bin "
     cmd2+="--c-kmers $tmp"
     cmd2+="-w ${w}/statistic_kmers_${cat_names[0]}/"
     
@@ -251,9 +251,9 @@ else # 4+ categories
             cmd2_i+="--p-value-mw ${pMW} "
         fi
         
-        tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+        tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
         cmd2_i+="--a-kmers $tmp"
-        tmp="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+        tmp="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}/}.kmers.bin "
         cmd2_i+="--b-kmers $tmp"
         cmd2_i+="-w ${w}/statistic_kmers_${cat_samples[0]}/"
 
@@ -290,7 +290,7 @@ while read line ; do
     cmd3_i=$cmd3
     tmp="${w}/statistic_kmers_${cat_samples[0]}/kmers/filtered_groupA.kmers.bin "
     cmd3_i+="--pivot $tmp"
-    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}\/}.kmers.bin "
+    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
     cmd3_i+="-i $tmp"
     cmd3_i+="-w ${w}/components_${cat_samples[0]}/"
 
