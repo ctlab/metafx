@@ -10,7 +10,7 @@ def get_basename(s):
     f = True
     if any(x in s for x in ["fq", "fastq", "FQ", "FASTQ"]):
         f = False
-    s = re.sub('(_1|_2|_r1|_r2|_R1|_R2|)\.(fa|fasta|fq|fastq|FA|FASTA|FQ|FASTQ)(\.gz|)$', '', s)
+    s = re.sub('(_r1|_r2|_R1|_R2|)\.(fa|fasta|fq|fastq|FA|FASTA|FQ|FASTQ)(\.gz|)$', '', s)
     return f, s
 
 

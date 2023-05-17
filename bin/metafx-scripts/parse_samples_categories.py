@@ -8,7 +8,7 @@ import pandas as pd
 
 def get_basename(s):
     s = os.path.basename(s)
-    s = re.sub('(_1|_2|_r1|_r2|_R1|_R2|)\.(fa|fasta|fq|fastq|FA|FASTA|FQ|FASTQ)(\.gz|\.bz2|)$', '', s)
+    s = re.sub('(_r1|_r2|_R1|_R2|)\.(fa|fasta|fq|fastq|FA|FASTA|FQ|FASTQ)(\.gz|\.bz2|)$', '', s)
     return s
 
 
