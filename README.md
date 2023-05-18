@@ -42,13 +42,18 @@ There are pipelines for analysis of the feature extraction results. Methods for 
 
 ## Installation
 
-To run MetaFX,  one need to clone repo with all binaries and add them to PATH.
+To run MetaFX,  one need to clone repo with all binaries.
 
 ```shell
 git clone https://github.com/ivartb/metafx_new
 cd metafx_new
-export PATH=bin:$PATH
 ```
+Then add MetaFX binary directory to the `PATH` variable.
+
+```shell
+export PATH=/path/to/metafx/bin:$PATH
+```
+> For permanent use, add the above line to your ~/.profile or ~/.bashrc file.
 
 ##### Requirements:
 * JRE 1.8 or higher
