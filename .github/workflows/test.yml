@@ -86,3 +86,8 @@ jobs:
       run: |
         export PATH=bin:$PATH
         metafx fit_predict -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_predict
+    - name: metafx extract_kmers
+      run: |
+        export PATH=bin:$PATH
+        metafx extract_kmers -t 6 -m 6G -k 31 -i test_data/test/* test_data/3* test_data/4* -w wd_kmers
+        metafx unique -t 6 -m 6G -k 31 -i test_data/sample_list.txt --kmers-dir wd_kmers/kmers -w wd_unique_kmers

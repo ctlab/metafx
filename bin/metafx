@@ -94,10 +94,9 @@ elif [ "$1" = calc_features ]; then
     { time ${PIPES}/calc_features.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
     exit `tail -1 $LOGFILE`
 elif [ "$1" = extract_kmers ]; then
-    echo "Not implemented error! Module is under development."
-    exit 1
-    #echo metafx predict ${@:2}
-    #time ${PIPES}/predict.sh ${@:2}
+    echo metafx extract_kmers ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/extract_kmers.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
 elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     help_message
     exit 0
