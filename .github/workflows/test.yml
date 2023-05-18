@@ -31,30 +31,18 @@ jobs:
     - name: metafx unique
       run: |
         export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx unique -t 6 -m 6G -k 31 -i test_data/sample_list.txt -w wd_unique
     - name: metafx metafast
       run: |
         export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx metafast -t 6 -m 6G -k 31 -i test_data/test/* test_data/3* test_data/4* -b1 200 -b2 5000 -l 50 -w wd_metafast
     - name: metafx colored
       run: |
         export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx colored -t 6 -m 6G -k 31 -i test_data/sample_list_3.txt --n-comps 100 --perc 0.7 -w wd_colored
     - name: metafx stats
       run: |
         export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx stats -t 6 -m 6G -k 31 -i test_data/sample_list.txt -w wd_stats
     - name: metafx metaspades (macOS)
       if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
@@ -63,9 +51,6 @@ jobs:
         tar -zxf SPAdes-3.15.5-Darwin.tar.gz
         export PATH=bin:$PATH
         export PATH=SPAdes-3.15.5-Darwin/bin/:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades
     - name: metafx metaspades (Linux)
       if : matrix.os == 'ubuntu-20.04'
@@ -74,51 +59,30 @@ jobs:
         tar -xzf SPAdes-3.15.5-Linux.tar.gz
         export PATH=bin:$PATH
         export PATH=SPAdes-3.15.5-Linux/bin/:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades
     - name: metafx pca
       run: |
         export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx unique -t 6 -m 6G -k 31 -i test_data/sample_list_train.txt -w wd_unique_pca --kmers-dir wd_metafast/kmer-counter-many/kmers
         metafx pca -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv --show -w wd_pca
     - name: metafx fit
       run: |
         export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit
     - name: metafx cv
       run: |
         export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx cv -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_cv -n 2 --grid -t 6
     - name: metafx calc_features
       run: |
         export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx calc_features -t 6 -m 6G -k 31 -i test_data/test_*.fastq.gz -d wd_unique_pca -w wd_calc_features
     - name: metafx predict
       run: |
         export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         echo -e "test_A\tA\ntest_B\tB\ntest_C\tC\ntest_D\tD\n" > test_labels.tsv
         metafx predict -f wd_calc_features/feature_table.tsv --model wd_cv/rf_model_cv.joblib -w wd_predict -i test_labels.tsv
     - name: metafx fit_predict
       run: |
         export PATH=bin:$PATH
-        chmod +x bin/metafx
-        chmod +x bin/metafx-modules/*
-        chmod +x bin/metafx-scripts/*
         metafx fit_predict -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_predict

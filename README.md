@@ -58,9 +58,10 @@ export PATH=bin:$PATH
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
+* [coreutils](https://www.gnu.org/software/coreutils/) required for macOS (e.g. `brew install coreutils`)
 * If you want to use `metafx metaspades` pipeline, you will also need [SPAdes](https://cab.spbu.ru/software/spades/) software. Please follow their [installation instructions](https://github.com/ablab/spades#sec2) (not recommended for first-time use).
 
-Scripts have been tested under *Ubuntu 18.04 LTS* and *Ubuntu 20.04 LTS*, but should generally work on Linux/MacOS.
+Scripts have been tested under *Ubuntu 18.04 LTS*, *Ubuntu 20.04 LTS*, *macOS 11 Big Sur*, and *macOS 12 Monterey*, and should generally work on Linux/macOS.
 
 ## Running instructions
 
