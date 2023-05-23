@@ -1,5 +1,5 @@
 
-![Test](https://github.com/ivartb/metafx_new/actions/workflows/test.yml/badge.svg)
+![Test](https://github.com/ctlab/metafx/actions/workflows/test.yml/badge.svg)
 
 # MetaFX
 
@@ -7,8 +7,11 @@
 
 The idea behind **MetaFX** is to introduce the feature extraction algorithm specific for metagenomics short reads data. It is capable of processing hundreds of samples 1-10 Gb each. The distinct property of suggest approach is the construction of meaningful features, which can not only be used to train classification model, but also can be further annotated and biologically interpreted.
 
-**MetaFX** documentation is available on the GitHub [wiki page](https://github.com/ivartb/metafx_new/wiki).<br/>
+**MetaFX** documentation is available on the GitHub [wiki page](https://github.com/ctlab/metafx/wiki).<br/>
 Here is a short version of it.
+
+> [Old version](https://github.com/ctlab/metafx_old) of MetaFX is now deprecated and archived.
+
 
 ## Table of contents
 
@@ -45,8 +48,8 @@ There are pipelines for analysis of the feature extraction results. Methods for 
 To run MetaFX,  one need to clone repo with all binaries.
 
 ```shell
-git clone https://github.com/ivartb/metafx_new
-cd metafx_new
+git clone https://github.com/ctlab/metafx
+cd metafx
 ```
 Then add MetaFX binary directory to the `PATH` variable.
 
@@ -87,7 +90,7 @@ All intermediate files and final results are saved there.
 
 ## Examples
 
-Examples and documentation for all MetaFX modules can be found in the [Wiki](https://github.com/ivartb/metafx_new/wiki). 
+Examples and documentation for all MetaFX modules can be found in the [Wiki](https://github.com/ctlab/metafx/wiki). 
 
 Here is presented a minimal example of data analysis with MetaFX algorithms:
 
@@ -209,7 +212,7 @@ metafx predict -w wd_predict -f wd_new_samples/feature_table.tsv --model wd_cv/r
 
 ## Contact
 
-Please report any problems directly to the GitHub [issue tracker](https://github.com/ivartb/metafx_new/issues).
+Please report any problems directly to the GitHub [issue tracker](https://github.com/ctlab/metafx/issues).
 
 Also, you can send your feedback to [abivanov@itmo.ru](mailto:abivanov@itmo.ru).
 
