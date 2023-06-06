@@ -197,7 +197,7 @@ fi
 if [[ ${gui} ]]; then
     comment "Running step 3: Bandage GUI"
 
-    cmd3="BandageNG load ${graph} ${outputName}.txt"
+    cmd3="BandageNG load --draw --features-draw ${graph} ${outputName}.txt"
     echo "${cmd3}"
     ${cmd3}
     if [[ $? -eq 0 ]]; then

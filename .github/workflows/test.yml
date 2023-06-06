@@ -101,6 +101,7 @@ jobs:
         cd ..
         export PATH=bin:$PATH
         export PATH=Bandage/:$PATH
+        export PATH=SPAdes-3.15.5-Darwin/bin/:$PATH
         metafx bandage -w wd_bandage --draw-graph -f wd_unique_pca/ -n 20
     - name: metafx bandage (Linux)
       if : matrix.os == 'ubuntu-20.04'
@@ -112,4 +113,5 @@ jobs:
         cd ..
         export PATH=bin:$PATH
         export PATH=Bandage/:$PATH
+        export PATH=SPAdes-3.15.5-Linux/bin/:$PATH
         metafx bandage -w wd_bandage --draw-graph -f wd_unique_pca/ -n 20
