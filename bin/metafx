@@ -25,6 +25,7 @@ help_message () {
     echo "    predict           Machine Learning methods to classify new samples based on pre-trained model"
     echo "    fit_predict       Machine Learning methods to train classification model based on extracted features and immediately apply it to classify new samples"
     echo "    cv                Machine Learning methods to train classification model based on extracted features and check accuracy via cross-validation"
+    echo "    bandage           Module to train classifier and prepare for visualisation in Bandage (https://github.com/ctlab/BandageNG)"
     echo ""
     echo "    calc_features     Module to count values for new samples based on previously extracted features"
     echo "    extract_kmers     Module to extract k-mers from samples (to speed up multiple calculations)"
@@ -96,6 +97,10 @@ elif [ "$1" = calc_features ]; then
 elif [ "$1" = extract_kmers ]; then
     echo metafx extract_kmers ${@:2} | tee -a $LOGFILE
     { time ${PIPES}/extract_kmers.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
+    exit `tail -1 $LOGFILE`
+elif [ "$1" = bandage ]; then
+    echo metafx bandage ${@:2} | tee -a $LOGFILE
+    { time ${PIPES}/bandage_pipe.sh ${@:2} 2>&1; echo $? >> $LOGFILE; } | tee -a $LOGFILE
     exit `tail -1 $LOGFILE`
 elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     help_message

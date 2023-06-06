@@ -91,3 +91,25 @@ jobs:
         export PATH=bin:$PATH
         metafx extract_kmers -t 6 -m 6G -k 31 -i test_data/test/* test_data/3* test_data/4* -w wd_kmers
         metafx unique -t 6 -m 6G -k 31 -i test_data/sample_list.txt --kmers-dir wd_kmers/kmers -w wd_unique_kmers
+    - name: metafx bandage (macOS)
+      if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
+      run: |
+        mkdir Bandage
+        cd Bandage
+        curl -L https://github.com/ctlab/BandageNG/releases/download/continuous/BandageNG-macOS-137757e.dmg -o BandageNG 
+        chmod +x BandageNG
+        cd ..
+        export PATH=bin:$PATH
+        export PATH=Bandage/:$PATH
+        metafx bandage -w wd_bandage --draw-graph -f wd_unique_pca/ -n 20
+    - name: metafx bandage (Linux)
+      if : matrix.os == 'ubuntu-20.04'
+      run: |
+        mkdir Bandage
+        cd Bandage
+        wget -O BandageNG https://github.com/ctlab/BandageNG/releases/download/continuous/BandageNG-Linux-137757e.AppImage
+        chmod +x BandageNG
+        cd ..
+        export PATH=bin:$PATH
+        export PATH=Bandage/:$PATH
+        metafx bandage -w wd_bandage --draw-graph -f wd_unique_pca/ -n 20
