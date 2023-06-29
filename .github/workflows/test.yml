@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-12, macos-11]
     
@@ -24,13 +25,11 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Install coreutils (macOS)
-      uses: ConorMacBride/install-package@v1
-      with:
-        brew: coreutils
-      #if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
-      #run: |
-      #  brew update
-      #  brew install coreutils
+      if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
+      run: |
+        brew cleanup
+        brew update
+        brew install coreutils
     - name: metafx unique
       run: |
         export PATH=bin:$PATH
