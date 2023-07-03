@@ -6,7 +6,7 @@ import glob
 
 
 def load_cat(cat, wd):
-    #df_list = [pd.read_csv(wd + "/features_" + cat + "/vectors/" + file + ".breadth", header=None, index_col=None) for file in all_files]
+    # df_list = [pd.read_csv(wd + "/features_" + cat + "/vectors/" + file + ".breadth", header=None, index_col=None) for file in all_files]
     all_files = glob.glob(wd + "/features_" + cat + "/vectors/" + "*.breadth")
     df_list = [pd.read_csv(file, header=None, index_col=None) for file in all_files]
     data = pd.concat(df_list, axis=1)

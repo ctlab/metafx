@@ -2,7 +2,7 @@
 # Utility for training RF model on feature table and predicting new labels
 import sys
 import pandas as pd
-from joblib import dump, load
+from joblib import dump
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
@@ -16,11 +16,11 @@ if __name__ == "__main__":
     if set(features.columns) != set(metadata.index):
         features_train = features.filter(items=metadata.index, axis=1)
         features_test = features[features.columns.difference(metadata.index)]
-        predict=True
+        predict = True
         print("Will use " + str(features_train.shape[1]) + " common samples for model training and " + str(features_test.shape[1]) + " samples to predict new labels")
     else:
         features_train = features
-        predict=False
+        predict = False
         print("Samples from feature table and metadata are the same! Will only train model, nothing to predict")
 
     model = RandomForestClassifier(n_estimators=100)
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     if predict:
         X_test = features_test.T
         y_pred = model.predict(X_test)
-        
+
         outFile = open(outName+".tsv", "w")
         for sam, pred in zip(X_test.index, y_pred):
             print(sam, pred, sep="\t", file=outFile)

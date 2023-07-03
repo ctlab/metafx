@@ -2,8 +2,7 @@
 # Utility for predicting labels based on pre-trained RF model
 import sys
 import pandas as pd
-from joblib import dump, load
-from sklearn.ensemble import RandomForestClassifier
+from joblib import load
 from sklearn.metrics import classification_report
 
 
@@ -21,12 +20,12 @@ if __name__ == "__main__":
 
     X = features.T
     y_pred = model.predict(X)
-    
+
     outFile = open(outName+".tsv", "w")
     for sam, pred in zip(X.index, y_pred):
         print(sam, pred, sep="\t", file=outFile)
     outFile.close()
-    
+
     if metadata is not None:
         y = [metadata.loc[i, 1] for i in X.index]
         print("Predictions accuracy compared with given labels:")

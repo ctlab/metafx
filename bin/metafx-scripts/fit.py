@@ -2,7 +2,7 @@
 # Utility for training RF model on feature table
 import sys
 import pandas as pd
-from joblib import dump, load
+from joblib import dump
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 

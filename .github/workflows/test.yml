@@ -27,8 +27,7 @@ jobs:
     - name: Install coreutils (macOS)
       if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
       run: |
-        brew cleanup
-        brew update
+        brew update-reset
         brew install coreutils
     - name: metafx unique
       run: |

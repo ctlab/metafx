@@ -3,7 +3,7 @@
 import sys
 import numpy as np
 import pandas as pd
-from joblib import dump, load
+from joblib import dump
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.metrics import classification_report
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         model = RandomForestClassifier()
         parameters = {"n_estimators": [10, 20, 30, 40] + list(range(50, 1001, 50)),
                       "max_depth": [None, 2, 3, 4] + list(range(5, 51, 5)),
-                     }
+                      }
         clf = GridSearchCV(model, parameters, scoring='balanced_accuracy', cv=nFolds, verbose=1, n_jobs=nThreads)
         clf.fit(X, y)
         df_grid = pd.DataFrame.from_dict(clf.cv_results_).filter(regex='param_.*|mean_test_score|std_test_score|rank_test_score')
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         dump(clf.best_estimator_, outName+".joblib")
         print("Model accuracy after training:")
         print(classification_report(y, clf.best_estimator_.predict(X)))
-    else: # performing cross-validation
+    else:  # performing cross-validation
         cv = StratifiedKFold(n_splits=nFolds)
         y_tests = []
         y_preds = []
@@ -66,4 +66,3 @@ if __name__ == "__main__":
         dump(model, outName+".joblib")
         print("Model accuracy after training:")
         print(classification_report(y, model.predict(X)))
-
