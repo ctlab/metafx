@@ -171,6 +171,11 @@ fi
 if [[ ${n_cat} -eq 2 ]]; then # 2 categories
     cmd2+="-t stats-kmers "
     
+    if [[ ${b} ]]; then
+        cmd2+="-b ${b} "
+    fi
+    
+    
     if [[ ${pChi2} ]]; then
         cmd2+="--p-value-chi2 ${pChi2} "
     fi
@@ -202,6 +207,11 @@ if [[ ${n_cat} -eq 2 ]]; then # 2 categories
 
 elif [[ ${n_cat} -eq 3 ]]; then # 3 categories
     cmd2+="-t stats-kmers-3 "
+    
+    if [[ ${b} ]]; then
+        cmd2+="-b ${b} "
+    fi
+    
     
     if [[ ${pChi2} ]]; then
         cmd2+="--p-value-chi2 ${pChi2} "
@@ -238,6 +248,10 @@ elif [[ ${n_cat} -eq 3 ]]; then # 3 categories
     ln -s `realpath $w`/statistic_kmers_${cat_names[0]}/kmers/filtered_groupC.kmers.bin ${w}/statistic_kmers_${cat_names[2]}/kmers/filtered_groupA.kmers.bin
 else # 4+ categories
     cmd2+="-t stats-kmers "
+    if [[ ${b} ]]; then
+        cmd2+="-b ${b} "
+    fi
+    
     while read line ; do
         IFS=$'\t' read -ra cat_samples <<< "${line}"
         echo "Processing category ${cat_samples[0]}"
