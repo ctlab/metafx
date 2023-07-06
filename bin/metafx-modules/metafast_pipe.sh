@@ -179,7 +179,11 @@ if [[ ${kmers} ]]; then
     mkdir ${w}
     mkdir ${w}/kmer-counter-many
     mkdir ${w}/kmer-counter-many/kmers
-    ln -s `realpath ${kmersDir}`/*.kmers.bin ${w}/kmer-counter-many/kmers/
+    for sname in ${i}; do
+        sname=`basename ${sname}`
+        sname=${sname%%.*}
+        ln -s `realpath ${kmersDir}`/${sname}.kmers.bin ${w}/kmer-counter-many/kmers/
+    done
     touch ${w}/kmer-counter-many/SUCCESS
     print_args ${w}/in.properties
     print_args ${w}/kmer-counter-many/in.properties
