@@ -97,7 +97,7 @@ jobs:
       run: |
         mkdir Bandage
         cd Bandage
-        curl -L https://github.com/ctlab/BandageNG/releases/download/continuous/BandageNG-macOS-cdcf9ea.dmg -o BandageNG 
+        curl -L https://github.com/ctlab/BandageNG/releases/download/continuous/BandageNG-macOS.dmg -o BandageNG 
         chmod +x BandageNG
         cd ..
         export PATH=bin:$PATH
@@ -109,7 +109,7 @@ jobs:
       run: |
         mkdir Bandage
         cd Bandage
-        wget -O BandageNG https://github.com/ctlab/BandageNG/releases/download/continuous/BandageNG-Linux-cdcf9ea.AppImage
+        wget -O BandageNG https://github.com/ctlab/BandageNG/releases/download/continuous/BandageNG-Linux.AppImage
         chmod +x BandageNG
         cd ..
         export PATH=bin:$PATH
