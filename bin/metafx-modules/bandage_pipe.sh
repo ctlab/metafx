@@ -19,7 +19,6 @@ help_message () {
     echo "    -n | --n-estimators  <int>            number of estimators in classification model [optional]"
     echo "    -d | --max-depth     <int>            maximum depth of decision tree base estimator [optional]"
     echo "    -e | --estimator     [RF, ADA, GBDT]  classification model: RF – Random Forest, ADA – AdaBoost, GBDT – Gradient Boosted Decision Trees [optional, default: RF]"
-    echo "         --draw-graph                     if TRUE performs de Bruijn graph construction by SPAdes to GFA format [default: False]"
     echo "         --gui                            if TRUE opens Bandage GUI and draw images. Does NOT work on servers with command line interface only [default: False]"
     echo "         --name          <filename>       name of output file with tree model in text format in workDir [optional, default: tree_model]"
     echo "";}
@@ -70,10 +69,6 @@ case $key in
     -e|--estimator)
     estimator="$2"
     shift
-    shift
-    ;;
-    --draw-graph)
-    drawGraph=true
     shift
     ;;
     --gui)
@@ -165,31 +160,24 @@ fi
 
 # ===== Step 2 =====
 
-if [[ ${drawGraph} ]]; then
-    comment "Running step 2: constructing de Brujn graph"
-    cmd2="spades.py --only-assembler --sc -o ${w}/spades_graph "
-    
-    counter=1
-    while read line ; do
-        IFS=$'\t' read -ra cat_samples <<< "${line}"
-        cmd2+="--s${counter} ${featDir}/contigs_${cat_samples[0]}/seq-builder-many/sequences/component.seq.fasta "
-        counter=$((counter + 1))
-    done<${featDir}/categories_samples.tsv
-    
-    echo "$cmd2"
-    echo "Log is saved to ${w}/spades_graph.log"
-    $cmd2 > "${w}/spades_graph.log"
-    if [[ $? -eq 0 ]]; then
-        comment "De Bruijn graph saved to: ${w}/spades_graph/assembly_graph_with_scaffolds.gfa"
-        graph="${w}/spades_graph/assembly_graph_with_scaffolds.gfa"
-    else
-        error "Error during step 1!"
-        exit 1
-    fi
+comment "Running step 2: constructing joint de Brujn graph of all features"
+
+files=""
+while read line ; do
+    IFS=$'\t' read -ra cat_samples <<< "${line}"
+    files+="${featDir}/contigs_${cat_samples[0]}/components-graph.gfa "
+done<${featDir}/categories_samples.tsv
+
+python3 ${SOFT}/join_gfa.py ${w} ${files}
+
+if [[ $? -eq 0 ]]; then
+    comment "De Bruijn graph saved to: ${w}/all-components-graph.gfa"
+    graph="${w}/all-components-graph.gfa"
 else
-    comment "Skipping step 2 (de Brujn graph construction): will draw only forest model"
-    graph="\"\""
+    error "Error during step 2!"
+    exit 1
 fi
+
 
 
 # ==== Step 3 ====
