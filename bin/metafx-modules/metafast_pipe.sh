@@ -235,7 +235,7 @@ rm -r ${w}/features_all
 comment "Running step 3: transforming binary components to fasta sequences and de Bruijn graph"
 
 cmd3=$cmd
-cmd3+="-t comp2seq "
+cmd3+="-t comp2graph "
 
 cmd3+="-cf ${w}/components_all/components.bin "
 cmd3+="-i ${w}/kmer-counter-many/kmers/*.kmers.bin "

@@ -296,7 +296,7 @@ fi
 comment "Running step 5: transforming binary components to fasta sequences and de Bruijn graph"
 
 cmd5=$cmd
-cmd5+="-t comp2seq "
+cmd5+="-t comp2graph "
 
 while read line ; do
     IFS=$'\t' read -ra cat_samples <<< "${line}"

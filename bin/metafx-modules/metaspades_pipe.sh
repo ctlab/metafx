@@ -335,7 +335,7 @@ else
     comment "Running step 6: transforming binary components to fasta sequences and de Bruijn graph"
 
     cmd6=$cmd
-    cmd6+="-t comp2seq "
+    cmd6+="-t comp2graph "
 
     cmd6+="-cf ${w}/components_all/components.bin "
     cmd6+="-w ${w}/contigs_all/"
