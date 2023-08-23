@@ -232,17 +232,21 @@ rm -r ${w}/features_all
 
 
 # ==== Step 3 ====
-comment "Running step 3: transforming binary components to fasta sequences (contigs)"
+comment "Running step 3: transforming binary components to fasta sequences and de Bruijn graph"
 
 cmd3=$cmd
 cmd3+="-t comp2seq "
 
 cmd3+="-cf ${w}/components_all/components.bin "
+cmd3+="-i ${w}/kmer-counter-many/kmers/*.kmers.bin "
+cmd3+="-cov "
 cmd3+="-w ${w}/contigs_all/"
 
-    
 echo "${cmd3}"
 ${cmd3}
+
+python3 ${SOFT}/graph2contigs.py ${w}/contigs_all/
+
 if [[ $? -eq 0 ]]; then
     comment "Step 3 finished successfully!"
 else

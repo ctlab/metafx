@@ -372,7 +372,7 @@ fi
 
 
 # ==== Step 5 ====
-comment "Running step 5: transforming binary components to fasta sequences (contigs)"
+comment "Running step 5: transforming binary components to fasta sequences and de Bruijn graph"
 
 cmd5=$cmd
 cmd5+="-t comp2seq "
@@ -383,11 +383,17 @@ while read line ; do
     
     cmd5_i=$cmd5
     cmd5_i+="-cf ${w}/components_${cat_samples[0]}/components.bin "
+    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+    cmd5_i+="-i $tmp"
+    cmd5_i+="-cov "
     cmd5_i+="-w ${w}/contigs_${cat_samples[0]}/"
 
     
     echo "${cmd5_i}"
     ${cmd5_i}
+    
+    python3 ${SOFT}/graph2contigs.py ${w}/contigs_${cat_samples[0]}/
+    
     if [[ $? -eq 0 ]]; then
         echo "Processed category ${cat_samples[0]}"
     else

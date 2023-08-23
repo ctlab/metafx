@@ -332,17 +332,19 @@ if [[ ${separate} ]]; then
     :
 else
     # ==== Step 6 ====
-    comment "Running step 6: transforming binary components to fasta sequences (contigs)"
+    comment "Running step 6: transforming binary components to fasta sequences and de Bruijn graph"
 
     cmd6=$cmd
     cmd6+="-t comp2seq "
 
     cmd6+="-cf ${w}/components_all/components.bin "
     cmd6+="-w ${w}/contigs_all/"
-
-        
+    
     echo "${cmd6}"
     ${cmd6}
+    
+    python3 ${SOFT}/graph2contigs.py ${w}/contigs_all/
+    
     if [[ $? -eq 0 ]]; then
         comment "Step 6 finished successfully!"
     else
