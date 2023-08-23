@@ -125,13 +125,13 @@ def printModelBase(model, resFileName, sourceDir):
         prefix += tree.node_count
 
     for fClass in classes:
-        file = open(sourceDir + "/contigs_" + fClass + "/kmers_fasta/component.fasta", 'r')
+        file = open(sourceDir + "/contigs_" + fClass + "/components.seq.fasta", 'r')
         line = file.readline()
         while line:
             feature = fClass + "_" + line[1:].split("_")[0]
-            k_mer = file.readline()[:-1]
+            seq = file.readline().strip()
             if feature in features:
-                print("S", feature, k_mer, sep="\t", file=f)
+                print("S", feature, seq, sep="\t", file=f)
             line = file.readline()
     f.close()
 
@@ -179,13 +179,13 @@ def printModelGradientBoosting(model, resFileName, sourceDir):
             prefix += tree.node_count
 
     for fClass in classes:
-        file = open(sourceDir + "/contigs_" + fClass + "/kmers_fasta/component.fasta", 'r')
+        file = open(sourceDir + "/contigs_" + fClass + "/components.seq.fasta", 'r')
         line = file.readline()
         while line:
             feature = fClass + "_" + line[1:].split("_")[0]
-            k_mer = file.readline()[:-1]
+            seq = file.readline().strip()
             if feature in features:
-                print("S", feature, k_mer, sep="\t", file=f)
+                print("S", feature, seq, sep="\t", file=f)
             line = file.readline()
     f.close()
 
