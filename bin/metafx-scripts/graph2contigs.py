@@ -16,6 +16,6 @@ if __name__ == "__main__":
                 comp += 1
                 comp_i = 0
             comp_i += 1
-            print(">" + str(comp+1) + "_" + str(comp_i), file=file)
+            print(">" + str(comp) + "_" + str(comp_i), file=file)
             print(seq, file=file)
     file.close()
