@@ -29,10 +29,6 @@ jobs:
       run: |
         brew update-reset
         brew install coreutils
-    - name: metafx unique
-      run: |
-        export PATH=bin:$PATH
-        metafx unique -t 6 -m 6G -k 31 -i test_data/sample_list.txt -w wd_unique
     - name: metafx metafast
       run: |
         export PATH=bin:$PATH
@@ -61,7 +57,7 @@ jobs:
         export PATH=bin:$PATH
         export PATH=SPAdes-3.15.5-Linux/bin/:$PATH
         metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades
-    - name: metafx pca
+    - name: metafx unique & metafx pca
       run: |
         export PATH=bin:$PATH
         metafx unique -t 6 -m 6G -k 31 -i test_data/sample_list_train.txt -w wd_unique_pca --kmers-dir wd_metafast/kmer-counter-many/kmers
