@@ -1,4 +1,6 @@
 #!/bin/bash
+# Utility for detecting greatest G value, such that the number of unique k-mers is more than 100000
+
 a=$(grep "of them is good" ${1} | grep -o -E ", [0-9']+ \(")
 a=$(echo "$a" | sed "s/'//g" | grep -o -E "[0-9]+")
 

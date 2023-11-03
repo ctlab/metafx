@@ -17,7 +17,8 @@ if __name__ == "__main__":
         features_train = features.filter(items=metadata.index, axis=1)
         features_test = features[features.columns.difference(metadata.index)]
         predict = True
-        print("Will use " + str(features_train.shape[1]) + " common samples for model training and " + str(features_test.shape[1]) + " samples to predict new labels")
+        print("Will use " + str(features_train.shape[1]) + " common samples for model training " +
+              "and " + str(features_test.shape[1]) + " samples to predict new labels")
     else:
         features_train = features
         predict = False
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     y_train = [metadata.loc[i, 1] for i in X_train.index]
 
     model.fit(X_train, y_train)
-    dump(model, outName+".joblib")
+    dump(model, outName + ".joblib")
 
     print("Model accuracy after training:")
     print(classification_report(y_train, model.predict(X_train)))
@@ -37,8 +38,8 @@ if __name__ == "__main__":
         X_test = features_test.T
         y_pred = model.predict(X_test)
 
-        outFile = open(outName+".tsv", "w")
+        outFile = open(outName + ".tsv", "w")
         for sam, pred in zip(X_test.index, y_pred):
             print(sam, pred, sep="\t", file=outFile)
         outFile.close()
-        print("Predicted labels saved to "+outName+".tsv")
+        print("Predicted labels saved to " + outName + ".tsv")

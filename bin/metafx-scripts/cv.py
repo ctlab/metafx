@@ -20,7 +20,8 @@ if __name__ == "__main__":
 
     if set(features.columns) != set(metadata.index):
         features = features.filter(items=metadata.index, axis=1)
-        print("Samples from feature table and metadata does not match! Will use only " + str(features.shape[1]) + " common samples")
+        print("Samples from feature table and metadata does not match! " +
+              "Will use only " + str(features.shape[1]) + " common samples")
 
     M = features.shape[0]  # features count
     N = features.shape[1]  # samples  count
@@ -38,12 +39,12 @@ if __name__ == "__main__":
         df_grid = pd.DataFrame.from_dict(clf.cv_results_).filter(regex='param_.*|mean_test_score|std_test_score|rank_test_score')
         df_grid = df_grid.sort_values(by="rank_test_score", kind="mergesort")
         print("\nGrid search cross-validation accuracy:")
-        print(df_grid.head(10).to_string(index=False), "."*88, df_grid.tail(10).to_string(index=False), sep="\n")
+        print(df_grid.head(10).to_string(index=False), "." * 88, df_grid.tail(10).to_string(index=False), sep="\n")
         print("\nSelected parameters for best Random Forest classifier:")
         for k, v in clf.best_params_.items():
             print("\t", k, "=", v)
         print()
-        dump(clf.best_estimator_, outName+".joblib")
+        dump(clf.best_estimator_, outName + ".joblib")
         print("Model accuracy after training:")
         print(classification_report(y, clf.best_estimator_.predict(X)))
     else:  # performing cross-validation
@@ -63,6 +64,6 @@ if __name__ == "__main__":
 
         model = RandomForestClassifier(n_estimators=100)
         model.fit(X, y)
-        dump(model, outName+".joblib")
+        dump(model, outName + ".joblib")
         print("Model accuracy after training:")
         print(classification_report(y, model.predict(X)))

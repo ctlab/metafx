@@ -54,5 +54,5 @@ if __name__ == "__main__":
         for i in range(N):
             plt.annotate(features.columns[i], pca_vals[i])
 
-    plt.savefig(outName+".png", bbox_inches='tight')
-    plt.savefig(outName+".svg", bbox_inches='tight')
+    plt.savefig(outName + ".png", bbox_inches='tight')
+    plt.savefig(outName + ".svg", bbox_inches='tight')

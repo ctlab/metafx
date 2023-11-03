@@ -7,8 +7,16 @@ import pandas as pd
 
 
 def get_basename(s):
+    """ Get file name without path and extension
+
+    Arguments:
+    s (str): full file path
+
+    Returns:
+    str: file basename without extension
+    """
     s = os.path.basename(s)
-    s = re.sub('(_r1|_r2|_R1|_R2|)\.(fa|fasta|fq|fastq|FA|FASTA|FQ|FASTQ)(\.gz|\.bz2|)$', '', s)
+    s = re.sub(r'(_r1|_r2|_R1|_R2|)\.(fa|fasta|fq|fastq|FA|FASTA|FQ|FASTQ)(\.gz|\.bz2|)$', '', s)
     return s
 
 
@@ -27,4 +35,4 @@ if __name__ == "__main__":
     for k, v in cat_dict.items():
         print(k, end="\t")
         print(" ".join(sorted(v)), end="\t")
-        print(" ".join(sorted(all_items-v)))
+        print(" ".join(sorted(all_items - v)))

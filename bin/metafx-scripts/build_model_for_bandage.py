@@ -11,15 +11,27 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 
-# dump and load classification model
+# to save and load classification model
 from joblib import dump, load
 
 
 def buildModelRandomForest(dataFile, rawLabels, nEstimators, maxDepth):
+    """Fit Random Forest classification model
+
+    Arguments:
+    - dataFile (str): path to tab-separated file with features table
+    - rawLabels (pd.DataFrame): DataFrame with class labels
+    - nEstimators (int): number of Decision Trees in model
+    - maxDepth (int): maximal depth of Decision Tree
+
+    Returns:
+    sklearn.ensemble.RandomForestClassifier: fitted model
+    """
     data = pd.read_csv(dataFile, header=0, index_col=0, sep='\t')
     if set(data.columns) != set(rawLabels.index):
         data = data.filter(items=rawLabels.index, axis=1)
-        print("Samples from feature table and metadata does not match! Will use only " + str(data.shape[1]) + " common samples")
+        print("Samples from feature table and metadata does not match! " +
+              "Will use only " + str(data.shape[1]) + " common samples")
     data = data.T
     labels = np.array([rawLabels.loc[i, 1] for i in data.index])
 
@@ -38,10 +50,22 @@ def buildModelRandomForest(dataFile, rawLabels, nEstimators, maxDepth):
 
 
 def buildModelGradientBoosting(dataFile, rawLabels, nEstimators, maxDepth):
+    """Fit Gradient Boosting classification model
+
+    Arguments:
+    - dataFile (str): path to tab-separated file with features table
+    - rawLabels (pd.DataFrame): DataFrame with class labels
+    - nEstimators (int): number of Decision Trees in model
+    - maxDepth (int): maximal depth of Decision Tree
+
+    Returns:
+    sklearn.ensemble.GradientBoostingClassifier: fitted model
+    """
     data = pd.read_csv(dataFile, header=0, index_col=0, sep='\t')
     if set(data.columns) != set(rawLabels.index):
         data = data.filter(items=rawLabels.index, axis=1)
-        print("Samples from feature table and metadata does not match! Will use only " + str(data.shape[1]) + " common samples")
+        print("Samples from feature table and metadata does not match! " +
+              "Will use only " + str(data.shape[1]) + " common samples")
     data = data.T
     labels = np.array([rawLabels.loc[i, 1] for i in data.index])
 
@@ -60,10 +84,22 @@ def buildModelGradientBoosting(dataFile, rawLabels, nEstimators, maxDepth):
 
 
 def buildModelAdaBoost(dataFile, rawLabels, nEstimators, maxDepth):
+    """Fit AdaBoost classification model
+
+    Arguments:
+    - dataFile (str): path to tab-separated file with features table
+    - rawLabels (pd.DataFrame): DataFrame with class labels
+    - nEstimators (int): number of Decision Trees in model
+    - maxDepth (int): maximal depth of Decision Tree
+
+    Returns:
+    sklearn.ensemble.AdaBoostClassifier: fitted model
+    """
     data = pd.read_csv(dataFile, header=0, index_col=0, sep='\t')
     if set(data.columns) != set(rawLabels.index):
         data = data.filter(items=rawLabels.index, axis=1)
-        print("Samples from feature table and metadata does not match! Will use only " + str(data.shape[1]) + " common samples")
+        print("Samples from feature table and metadata does not match! " +
+              "Will use only " + str(data.shape[1]) + " common samples")
     data = data.T
     labels = np.array([rawLabels.loc[i, 1] for i in data.index])
 
@@ -83,13 +119,26 @@ def buildModelAdaBoost(dataFile, rawLabels, nEstimators, maxDepth):
     return model
 
 
-def printModelBase(model, resFileName, sourceDir):
+def printModel(model, resFileName, sourceDir, typeOfForest=0):
+    """Print fitted model to file in format supported by BandageNG
+
+    Arguments:
+    - model: fitted model
+    - resFileName (str): filename to output result
+    - sourceDir (str): path to directory with features' sequences
+    - typeOfForest (int): 0 (RandomForest), 1 (GradientBoosting) or 2 (AdaBoost)
+
+    Returns:
+    None
+    """
     f = open(resFileName, 'w')
     prefix = 0
     features = dict()
     treeClassifierList = model.estimators_
     feature_names = model.feature_names_in_
     classes = model.classes_
+    if typeOfForest == 1:
+        treeClassifierList = np.ravel(treeClassifierList)
     for tc in treeClassifierList:
         tree = tc.tree_
         nodeIds = [0]
@@ -104,24 +153,24 @@ def printModelBase(model, resFileName, sourceDir):
                     value = tree.value[nodeId].T[0]
                 class_name = np.argmax(value)
                 print("C", nodeId + prefix, classes[class_name], sep="\t", file=f)
-                continue
-            childLeftId = tree.children_left[nodeId]
-            nodeIds.append(childLeftId)
-            print(childLeftId + prefix, sep="\t", end="\t", file=f)
-
-            childRightId = tree.children_right[nodeId]
-            nodeIds.append(childRightId)
-            print(childRightId + prefix,  sep="\t", end="\t", file=f)
-            print(file=f)
-            feature = feature_names[tree.feature[nodeId]]
-            threshold = tree.threshold[nodeId]
-            classF = feature.split("_")[0]
-            print("C", nodeId + prefix, classF, sep="\t", file=f)
-            print("F", nodeId + prefix, feature, "{:.2f}".format(threshold), sep="\t", end="\n", file=f)
-            if feature in features:
-                features[feature].append(nodeId + prefix)
             else:
-                features[feature] = [nodeId + prefix]
+                childLeftId = tree.children_left[nodeId]
+                nodeIds.append(childLeftId)
+                print(childLeftId + prefix, end="\t", file=f)
+
+                childRightId = tree.children_right[nodeId]
+                nodeIds.append(childRightId)
+                print(childRightId + prefix, file=f)
+
+                feature = feature_names[tree.feature[nodeId]]
+                threshold = tree.threshold[nodeId]
+                classF = feature.split("_")[0]
+                print("C", nodeId + prefix, classF, sep="\t", file=f)
+                print("F", nodeId + prefix, feature, "{:.2f}".format(threshold), sep="\t", file=f)
+                if feature in features:
+                    features[feature].append(nodeId + prefix)
+                else:
+                    features[feature] = [nodeId + prefix]
         prefix += tree.node_count
 
     for fClass in classes:
@@ -136,79 +185,34 @@ def printModelBase(model, resFileName, sourceDir):
     f.close()
 
 
-def printModelGradientBoosting(model, resFileName, sourceDir):
-    f = open(resFileName, 'w')
-    prefix = 0
-    features = dict()
-    treeClassifierList = model.estimators_
-    feature_names = model.feature_names_in_
-    classes = model.classes_
-    for i in treeClassifierList:
-        for tc in i:
-            tree = tc.tree_
-            nodeIds = [0]
-            while (len(nodeIds) > 0):
-                nodeId = nodeIds.pop(0)
-                print("N", nodeId + prefix, sep="\t", end="\t", file=f)
-                if tree.children_left[nodeId] == tree.children_right[nodeId]:
-                    print(file=f)
-                    if tree.n_outputs == 1:
-                        value = tree.value[nodeId][0]
-                    else:
-                        value = tree.value[nodeId].T[0]
-                    class_name = np.argmax(value)
-                    print("C", nodeId + prefix, classes[class_name], sep="\t", file=f)
-                    continue
-                childLeftId = tree.children_left[nodeId]
-                nodeIds.append(childLeftId)
-                print(childLeftId + prefix, sep="\t", end="\t", file=f)
-
-                childRightId = tree.children_right[nodeId]
-                nodeIds.append(childRightId)
-                print(childRightId + prefix,  sep="\t", end="\t", file=f)
-                print(file=f)
-                feature = feature_names[tree.feature[nodeId]]
-                threshold = tree.threshold[nodeId]
-                classF = feature.split("_")[0]
-                print("C", nodeId + prefix, classF, sep="\t", file=f)
-                print("F", nodeId + prefix, feature, "{:.2f}".format(threshold), sep="\t", end="\n", file=f)
-                if feature in features:
-                    features[feature].append(nodeId + prefix)
-                else:
-                    features[feature] = [nodeId + prefix]
-            prefix += tree.node_count
-
-    for fClass in classes:
-        file = open(sourceDir + "/contigs_" + fClass + "/components.seq.fasta", 'r')
-        line = file.readline()
-        while line:
-            feature = fClass + "_" + line[1:].split("_")[0]
-            seq = file.readline().strip()
-            if feature in features:
-                print("S", feature, seq, sep="\t", file=f)
-            line = file.readline()
-    f.close()
-
-
 def buildAndPrintModel(sourceDir, treeNum, maxDepth, typeOfForest, resFile, model=None):
+    """Wrapper to fit and print classification model
+
+    Arguments:
+    - sourceDir (str): path to directory with features' sequences
+    - treeNum (int): number of Decision Trees in model
+    - maxDepth (int): maximal depth of Decision Tree
+    - typeOfForest (int): 0 (RandomForest), 1 (GradientBoosting) or 2 (AdaBoost)
+    - resFile (str): filename to output result
+    - model: pre-fitted model
+
+    Returns:
+    None
+    """
     rawLabels = pd.read_csv(sourceDir + '/samples_categories.tsv', sep="\t", index_col=0, header=None)
     rawLabels.index = rawLabels.index.astype(str)
 
-    if typeOfForest == 0:
-        if model is None:
-            model = buildModelRandomForest(sourceDir + '/feature_table.tsv', rawLabels, treeNum, maxDepth)
-            dump(model, resFile[:-4]+".joblib")
-        printModelBase(model, resFile, sourceDir)
-    elif typeOfForest == 1:
-        if model is None:
-            model = buildModelGradientBoosting(sourceDir + '/feature_table.tsv', rawLabels, treeNum, maxDepth)
-            dump(model, resFile[:-4]+".joblib")
-        printModelGradientBoosting(model, resFile, sourceDir)
-    else:
-        if model is None:
-            model = buildModelAdaBoost(sourceDir + '/feature_table.tsv', rawLabels, treeNum, maxDepth)
-            dump(model, resFile[:-4]+".joblib")
-        printModelBase(model, resFile, sourceDir)
+    if model is None:
+        dataFile = sourceDir + '/feature_table.tsv'
+        if typeOfForest == 0:
+            model = buildModelRandomForest(dataFile, rawLabels, treeNum, maxDepth)
+        elif typeOfForest == 1:
+            model = buildModelGradientBoosting(dataFile, rawLabels, treeNum, maxDepth)
+        elif typeOfForest == 2:
+            model = buildModelAdaBoost(dataFile, rawLabels, treeNum, maxDepth)
+        dump(model, resFile[:-4] + ".joblib")
+
+    printModel(model, resFile, sourceDir, typeOfForest)
 
 
 if __name__ == "__main__":

@@ -5,13 +5,34 @@ import os
 import re
 
 
-def get_basename(s):
+def is_fastq(s):
+    """ Check whether the file is FASTQ format
+
+    Arguments:
+    s (str): full file path
+
+    Returns:
+    bool: True for file in FASTQ format
+    """
     s = os.path.basename(s)
     f = True
     if any(x in s for x in ["fq", "fastq", "FQ", "FASTQ"]):
         f = False
-    s = re.sub('(_r1|_r2|_R1|_R2|)\.(fa|fasta|fq|fastq|FA|FASTA|FQ|FASTQ)(\.gz|)$', '', s)
-    return f, s
+    return f
+
+
+def get_basename(s):
+    """ Get file name without path and extension
+
+    Arguments:
+    s (str): full file path
+
+    Returns:
+    str: file basename without extension
+    """
+    s = os.path.basename(s)
+    s = re.sub(r'(_r1|_r2|_R1|_R2|)\.(fa|fasta|fq|fastq|FA|FASTA|FQ|FASTQ)(\.gz|)$', '', s)
+    return s
 
 
 if __name__ == "__main__":
@@ -19,7 +40,8 @@ if __name__ == "__main__":
     names_files = dict()
 
     for file in files:
-        f, base = get_basename(file)
+        f = is_fastq(file)
+        base = get_basename(file)
         if base not in names_files:
             names_files[base] = (f, [])
         names_files[base][1].append(file)

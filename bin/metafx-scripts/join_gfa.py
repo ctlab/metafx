@@ -5,7 +5,7 @@ import sys
 
 if __name__ == "__main__":
     wd = sys.argv[1]
-    file = open(wd+"/all-components-graph.gfa", "w")
+    file = open(wd + "/all-components-graph.gfa", "w")
     cat = 0
     m = dict()
     for fin in sys.argv[2:]:

@@ -21,7 +21,7 @@ if __name__ == "__main__":
     X = features.T
     y_pred = model.predict(X)
 
-    outFile = open(outName+".tsv", "w")
+    outFile = open(outName + ".tsv", "w")
     for sam, pred in zip(X.index, y_pred):
         print(sam, pred, sep="\t", file=outFile)
     outFile.close()

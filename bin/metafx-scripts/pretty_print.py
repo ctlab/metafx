@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     total_len = 120
     max_len = total_len - 20
-    print("\n" + delimeter*total_len)
+    print("\n" + delimeter * total_len)
 
     words = comment.split(" ")
     line = ""
@@ -17,12 +17,12 @@ if __name__ == "__main__":
         if len(line) + 1 + len(word) > max_len:
             left_space = (total_len - len(line) - 10) // 2
             right_space = total_len - left_space - len(line) - 10
-            print(delimeter*5 + " "*left_space + line + " "*right_space + delimeter*5)
+            print(delimeter * 5 + " " * left_space + line + " " * right_space + delimeter * 5)
             line = word
         else:
             line = line + " " + word
     left_space = (total_len - len(line) - 10) // 2
     right_space = total_len - left_space - len(line) - 10
-    print(delimeter*5 + " "*left_space + line + " "*right_space + delimeter*5)
+    print(delimeter * 5 + " " * left_space + line + " " * right_space + delimeter * 5)
 
-    print(delimeter*total_len + "\n")
+    print(delimeter * total_len + "\n")

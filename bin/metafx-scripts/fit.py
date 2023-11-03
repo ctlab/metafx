@@ -15,7 +15,8 @@ if __name__ == "__main__":
 
     if set(features.columns) != set(metadata.index):
         features = features.filter(items=metadata.index, axis=1)
-        print("Samples from feature table and metadata does not match! Will use only " + str(features.shape[1]) + " common samples")
+        print("Samples from feature table and metadata does not match! " +
+              "Will use only " + str(features.shape[1]) + " common samples")
 
     M = features.shape[0]  # features count
     N = features.shape[1]  # samples  count
@@ -25,7 +26,7 @@ if __name__ == "__main__":
     y = [metadata.loc[i, 1] for i in X.index]
 
     model.fit(X, y)
-    dump(model, outName+".joblib")
+    dump(model, outName + ".joblib")
 
     print("Model accuracy after training:")
     print(classification_report(y, model.predict(X)))
