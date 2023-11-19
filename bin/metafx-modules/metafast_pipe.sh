@@ -182,7 +182,11 @@ if [[ ${kmers} ]]; then
     for sname in ${i}; do
         sname=`basename ${sname}`
         sname=${sname%%.*}
-        ln -s `realpath ${kmersDir}`/${sname}.kmers.bin ${w}/kmer-counter-many/kmers/
+        sname=${sname%%_R1}
+        sname=${sname%%_r1}
+        sname=${sname%%_R2}
+        sname=${sname%%_r2}
+        ln -sf `realpath ${kmersDir}`/${sname}.kmers.bin ${w}/kmer-counter-many/kmers/
     done
     touch ${w}/kmer-counter-many/SUCCESS
     print_args ${w}/in.properties
