@@ -22,6 +22,7 @@ help_message () {
     echo "         --pchi2         <float>      p-value for chi-squared test [default: 0.05]"
     echo "         --pmw           <float>      p-value for Mann–Whitney test [default: 0.05]"
     echo "         --kmers-dir     <dirname>    directory with pre-computed k-mers for samples in binary format [optional]"
+    echo "         --skip-graph                 if TRUE skip de Bruijn graph and fasta construction from components [default: False]"
     echo "";}
 
 
@@ -93,6 +94,10 @@ case $key in
     -w|--work-dir)
     w="$2"
     shift
+    shift
+    ;;
+    --skip-graph)
+    skipGraph=true
     shift
     ;;
     *)    # unknown option
@@ -372,41 +377,45 @@ fi
 
 
 # ==== Step 5 ====
-comment "Running step 5: transforming binary components to fasta sequences and de Bruijn graph"
+if [[ ${skipGraph} ]]; then 
+    comment "Skipping step 5: no de Bruijn graph and fasta sequences construction"
+else
+    comment "Running step 5: transforming binary components to fasta sequences and de Bruijn graph"
 
-cmd5=$cmd
-cmd5+="-t comp2graph "
+    cmd5=$cmd
+    cmd5+="-t comp2graph "
 
-while read line ; do
-    IFS=$'\t' read -ra cat_samples <<< "${line}"
-    echo "Processing category ${cat_samples[0]}"
-    
-    cmd5_i=$cmd5
-    cmd5_i+="-cf ${w}/components_${cat_samples[0]}/components.bin "
-    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
-    cmd5_i+="-i $tmp"
-    cmd5_i+="-cov "
-    cmd5_i+="-w ${w}/contigs_${cat_samples[0]}/"
+    while read line ; do
+        IFS=$'\t' read -ra cat_samples <<< "${line}"
+        echo "Processing category ${cat_samples[0]}"
+        
+        cmd5_i=$cmd5
+        cmd5_i+="-cf ${w}/components_${cat_samples[0]}/components.bin "
+        tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+        cmd5_i+="-i $tmp"
+        cmd5_i+="-cov "
+        cmd5_i+="-w ${w}/contigs_${cat_samples[0]}/"
 
-    
-    echo "${cmd5_i}"
-    ${cmd5_i}
-    
-    python3 ${SOFT}/graph2contigs.py ${w}/contigs_${cat_samples[0]}/
-    
+        
+        echo "${cmd5_i}"
+        ${cmd5_i}
+        
+        python3 ${SOFT}/graph2contigs.py ${w}/contigs_${cat_samples[0]}/
+        
+        if [[ $? -eq 0 ]]; then
+            echo "Processed category ${cat_samples[0]}"
+        else
+            error "Error during step 5"
+            exit 1
+        fi
+    done<${w}/categories_samples.tsv
+
     if [[ $? -eq 0 ]]; then
-        echo "Processed category ${cat_samples[0]}"
+        comment "Step 5 finished successfully!"
     else
-        error "Error during step 5"
+        error "Error during step 5!"
         exit 1
     fi
-done<${w}/categories_samples.tsv
-
-if [[ $? -eq 0 ]]; then
-    comment "Step 5 finished successfully!"
-else
-    error "Error during step 5!"
-    exit 1
 fi
 
 

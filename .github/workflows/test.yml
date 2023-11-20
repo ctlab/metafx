@@ -32,7 +32,7 @@ jobs:
     - name: metafx metafast
       run: |
         export PATH=bin:$PATH
-        metafx metafast -t 6 -m 6G -k 31 -i test_data/test/* test_data/3* test_data/4* -b1 200 -b2 5000 -l 50 -w wd_metafast
+        metafx metafast -t 6 -m 6G -k 31 -i test_data/test/* test_data/3* test_data/4* -b1 200 -b2 5000 -l 50 -w wd_metafast --skip-graph
     - name: metafx colored
       run: |
         export PATH=bin:$PATH
@@ -40,7 +40,7 @@ jobs:
     - name: metafx stats
       run: |
         export PATH=bin:$PATH
-        metafx stats -t 6 -m 6G -k 31 -i test_data/sample_list.txt -w wd_stats
+        metafx stats -t 6 -m 6G -k 31 -i test_data/sample_list.txt -w wd_stats --skip-graph
     - name: metafx metaspades (macOS)
       if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
       run: |
@@ -48,7 +48,7 @@ jobs:
         tar -zxf SPAdes-3.15.5-Darwin.tar.gz
         export PATH=bin:$PATH
         export PATH=SPAdes-3.15.5-Darwin/bin/:$PATH
-        metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades
+        metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades --skip-graph
     - name: metafx metaspades (Linux)
       if : matrix.os == 'ubuntu-20.04'
       run: |
@@ -56,7 +56,7 @@ jobs:
         tar -xzf SPAdes-3.15.5-Linux.tar.gz
         export PATH=bin:$PATH
         export PATH=SPAdes-3.15.5-Linux/bin/:$PATH
-        metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades
+        metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades --skip-graph
     - name: metafx unique & metafx pca
       run: |
         export PATH=bin:$PATH

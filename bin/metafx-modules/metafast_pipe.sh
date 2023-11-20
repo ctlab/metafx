@@ -23,6 +23,7 @@ help_message () {
     echo "    -b1 | --min-comp-size <int>        minimum size of extracted components (features) in k-mers [default: 1000]"
     echo "    -b2 | --max-comp-size <int>        maximum size of extracted components (features) in k-mers [default: 10000]"
     echo "          --kmers-dir     <dirname>    directory with pre-computed k-mers for samples in binary format [optional, if set '-i' can be omitted]"
+    echo "          --skip-graph                 if TRUE skip de Bruijn graph and fasta construction from components [default: False]"
     echo "";}
 
 
@@ -132,6 +133,10 @@ case $key in
     shift
     shift
     ;;
+    --skip-graph)
+    skipGraph=true
+    shift
+    ;;
     *)    # unknown option
     POSITIONAL+=("$1") # save it in an array for later
     shift
@@ -236,26 +241,30 @@ rm -r ${w}/features_all
 
 
 # ==== Step 3 ====
-comment "Running step 3: transforming binary components to fasta sequences and de Bruijn graph"
-
-cmd3=$cmd
-cmd3+="-t comp2graph "
-
-cmd3+="-cf ${w}/components_all/components.bin "
-cmd3+="-i ${w}/kmer-counter-many/kmers/*.kmers.bin "
-cmd3+="-cov "
-cmd3+="-w ${w}/contigs_all/"
-
-echo "${cmd3}"
-${cmd3}
-
-python3 ${SOFT}/graph2contigs.py ${w}/contigs_all/
-
-if [[ $? -eq 0 ]]; then
-    comment "Step 3 finished successfully!"
+if [[ ${skipGraph} ]]; then 
+    comment "Skipping step 3: no de Bruijn graph and fasta sequences construction"
 else
-    error "Error during step 3!"
-    exit 1
+    comment "Running step 3: transforming binary components to fasta sequences and de Bruijn graph"
+
+    cmd3=$cmd
+    cmd3+="-t comp2graph "
+
+    cmd3+="-cf ${w}/components_all/components.bin "
+    cmd3+="-i ${w}/kmer-counter-many/kmers/*.kmers.bin "
+    cmd3+="-cov "
+    cmd3+="-w ${w}/contigs_all/"
+
+    echo "${cmd3}"
+    ${cmd3}
+
+    python3 ${SOFT}/graph2contigs.py ${w}/contigs_all/
+
+    if [[ $? -eq 0 ]]; then
+        comment "Step 3 finished successfully!"
+    else
+        error "Error during step 3!"
+        exit 1
+    fi
 fi
 
 

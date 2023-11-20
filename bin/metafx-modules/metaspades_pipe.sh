@@ -23,6 +23,7 @@ help_message () {
     echo "    -b1 | --min-comp-size <int>        minimum size of extracted components (features) in k-mers [default: 1000]"
     echo "    -b2 | --max-comp-size <int>        maximum size of extracted components (features) in k-mers [default: 10000]"
     echo "          --kmers-dir     <dirname>    directory with pre-computed k-mers for samples in binary format [optional, if set '-i' can be omitted]"
+    echo "          --skip-graph                 if TRUE skip de Bruijn graph and fasta construction from components [default: False]"
     echo "";}
 
 
@@ -100,6 +101,10 @@ case $key in
     -w|--work-dir)
     w="$2"
     shift
+    shift
+    ;;
+    --skip-graph)
+    skipGraph=true
     shift
     ;;
     *)    # unknown option
@@ -332,24 +337,28 @@ if [[ ${separate} ]]; then
     :
 else
     # ==== Step 6 ====
-    comment "Running step 6: transforming binary components to fasta sequences and de Bruijn graph"
-
-    cmd6=$cmd
-    cmd6+="-t comp2graph "
-
-    cmd6+="-cf ${w}/components_all/components.bin "
-    cmd6+="-w ${w}/contigs_all/"
-    
-    echo "${cmd6}"
-    ${cmd6}
-    
-    python3 ${SOFT}/graph2contigs.py ${w}/contigs_all/
-    
-    if [[ $? -eq 0 ]]; then
-        comment "Step 6 finished successfully!"
+    if [[ ${skipGraph} ]]; then 
+        comment "Skipping step 6: no de Bruijn graph and fasta sequences construction"
     else
-        error "Error during step 6!"
-        exit 1
+        comment "Running step 6: transforming binary components to fasta sequences and de Bruijn graph"
+
+        cmd6=$cmd
+        cmd6+="-t comp2graph "
+
+        cmd6+="-cf ${w}/components_all/components.bin "
+        cmd6+="-w ${w}/contigs_all/"
+        
+        echo "${cmd6}"
+        ${cmd6}
+        
+        python3 ${SOFT}/graph2contigs.py ${w}/contigs_all/
+        
+        if [[ $? -eq 0 ]]; then
+            comment "Step 6 finished successfully!"
+        else
+            error "Error during step 6!"
+            exit 1
+        fi
     fi
 fi
 
