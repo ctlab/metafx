@@ -30,7 +30,7 @@ if __name__ == "__main__":
     cat_samples = pd.read_csv(cat_file, sep="\t", header=None, index_col=None)
     cat_samples = cat_samples.fillna('')
     categories = cat_samples.iloc[:, 0]
-    all_files = cat_samples.iloc[0, 1].split() + cat_samples.iloc[0, 2].split()
+    # all_files = cat_samples.iloc[0, 1].split() + cat_samples.iloc[0, 2].split()
 
     subtables = []
     for cat in categories:
