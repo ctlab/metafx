@@ -3,3 +3,4 @@ pandas
 scikit-learn
 matplotlib
 joblib
+ete3
