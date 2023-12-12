@@ -21,6 +21,7 @@ help_message () {
     echo "    -b | --bad-frequency <int>        maximal frequency for a k-mer to be assumed erroneous [default: 1]"
     echo "         --min-samples   <int>        k-mer is considered group-specific if present in at least G samples of that group. G iterates in range [--min-samples; --max-samples] [default: 2]"
     echo "         --max-samples   <int>        k-mer is considered group-specific if present in at least G samples of that group. G iterates in range [--min-samples; --max-samples] [default: #{samples in category}/2 + 1]"
+    echo "         --depth         <int>        Depth of de Bruijn graph traversal from pivot k-mers in number of branches [default: 1]"
     echo "         --kmers-dir     <dirname>    directory with pre-computed k-mers for samples in binary format [optional]"
     echo "         --skip-graph                 if TRUE skip de Bruijn graph and fasta construction from components [default: False]"
     echo "";}
@@ -77,6 +78,11 @@ case $key in
     ;;
     --max-samples)
     maxSamples="$2"
+    shift
+    shift
+    ;;
+    --depth)
+    depth="$2"
     shift
     shift
     ;;
@@ -214,6 +220,10 @@ comment "Running step 3: extracting graph components around group-specific k-mer
 
 cmd3=$cmd
 cmd3+="-t component-extractor "
+
+if [[ ${depth} ]]; then
+    cmd3+="--depth ${depth} "
+fi
 
 while read line ; do
     IFS=$'\t' read -ra cat_samples <<< "${line}"

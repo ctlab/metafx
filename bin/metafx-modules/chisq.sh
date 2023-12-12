@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 ##########################################################################################
-#### MetaFX stats module to extract statistically-significant k-mers from metagenomes ####
+## MetaFX chisq module to extract top N chi-squared significant k-mers from metagenomes ##
 ##########################################################################################
 
 help_message () {
     echo ""
     echo "$(metafx -v)"
-    echo "MetaFX stats module – supervised feature extraction using statistically significant k-mers"
-    echo "Usage: metafx stats [<Launch options>] [<Input parameters>]"
+    echo "MetaFX chisq module – supervised feature extraction using top significant k-mers by chi-squared test"
+    echo "Usage: metafx chisq [<Launch options>] [<Input parameters>]"
     echo ""
     echo "Launch options:"
     echo "    -h | --help                       show this help message and exit"
@@ -18,9 +18,8 @@ help_message () {
     echo "Input parameters:"
     echo "    -k | --k             <int>        k-mer size (in nucleotides, maximum value is 31) [mandatory]"
     echo "    -i | --reads-file    <filename>   tab-separated file with 2 values in each row: <path_to_file>\t<category> [mandatory]"
+    echo "    -n | --num-kmers     <int>        number of most specific k-mers to be extracted [mandatory]"
     echo "    -b | --bad-frequency <int>        maximal frequency for a k-mer to be assumed erroneous [default: 1]"
-    echo "         --pchi2         <float>      p-value for chi-squared test [default: 0.05]"
-    echo "         --pmw           <float>      p-value for Mann–Whitney test [default: 0.05]"
     echo "         --depth         <int>        Depth of de Bruijn graph traversal from pivot k-mers in number of branches [default: 1]"
     echo "         --kmers-dir     <dirname>    directory with pre-computed k-mers for samples in binary format [optional]"
     echo "         --skip-graph                 if TRUE skip de Bruijn graph and fasta construction from components [default: False]"
@@ -71,13 +70,8 @@ case $key in
     shift
     ;;
     
-    --pchi2)
-    pChi2="$2"
-    shift
-    shift
-    ;;
-    --pmw)
-    pMW="$2"
+    -n|--num-kmers)
+    nBest="$2"
     shift
     shift
     ;;
@@ -144,6 +138,7 @@ else
     if [[ ${i} ]]; then
         cmd1+="-i $(cut -f1 ${i} | tr '\n' ' ') "
     fi
+    
     cmd1+="-w ${w}/kmers/"
 
     echo "$cmd1"
@@ -159,7 +154,7 @@ fi
 
 
 # ==== Step 2 ====
-comment "Running step 2: extracting statistically-significant k-mers"
+comment "Running step 2: extracting statistically-significant k-mers and corresponding ranks"
 
 python3 ${SOFT}/parse_samples_categories.py ${i} > ${w}/categories_samples.tsv
 python3 ${SOFT}/get_samples_categories.py ${w}
@@ -179,19 +174,16 @@ if [[ $p ]]; then
 fi
 
 
-if [[ ${n_cat} -eq 2 ]]; then # 2 categories
-    cmd2+="-t stats-kmers "
+if [[ ${n_cat} -lt 4 ]]; then # 2 or 3 categories
+    cmd2+="-t top-stats-kmers "
     
     if [[ ${b} ]]; then
         cmd2+="-b ${b} "
     fi
     
     
-    if [[ ${pChi2} ]]; then
-        cmd2+="--p-value-chi2 ${pChi2} "
-    fi
-    if [[ ${pMW} ]]; then
-        cmd2+="--p-value-mw ${pMW} "
+    if [[ ${nBest} ]]; then
+        cmd2+="--num-kmers ${nBest} "
     fi
     
     IFS=$'\n' read -d '' -ra cat_samples <<< "$(cut -d$'\t' -f2 ${w}/categories_samples.tsv)"
@@ -201,66 +193,32 @@ if [[ ${n_cat} -eq 2 ]]; then # 2 categories
     cmd2+="--a-kmers $tmp"
     tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
     cmd2+="--b-kmers $tmp"
-    cmd2+="-w ${w}/statistic_kmers_${cat_names[0]}/"
+    
+    AMOUNT="two"
+    if [[ ${n_cat} -eq 3 ]]; then
+        tmp="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+        cmd2+="--c-kmers $tmp"
+        AMOUNT="three"
+    fi
+    
+    cmd2+="-w ${w}/statistic_kmers_all/"
     
     echo "${cmd2}"
     ${cmd2}
     if [[ $? -eq 0 ]]; then
-        echo "Processed two categories of samples: ${cat_names[@]}"
+        echo "Processed ${AMOUNT} categories of samples: ${cat_names[@]}"
     else
         error "Error during step 2!"
         exit 1
     fi
-
-    mkdir ${w}/statistic_kmers_${cat_names[1]}
-    mkdir ${w}/statistic_kmers_${cat_names[1]}/kmers
-    ln -s `realpath $w`/statistic_kmers_${cat_names[0]}/kmers/filtered_groupB.kmers.bin ${w}/statistic_kmers_${cat_names[1]}/kmers/filtered_groupA.kmers.bin
-
-elif [[ ${n_cat} -eq 3 ]]; then # 3 categories
-    cmd2+="-t stats-kmers-3 "
-    
-    if [[ ${b} ]]; then
-        cmd2+="-b ${b} "
-    fi
-    
-    
-    if [[ ${pChi2} ]]; then
-        cmd2+="--p-value-chi2 ${pChi2} "
-    fi
-    if [[ ${pMW} ]]; then
-        cmd2+="--p-value-mw ${pMW} "
-    fi
-    
-    IFS=$'\n' read -d '' -ra cat_samples <<< "$(cut -d$'\t' -f2 ${w}/categories_samples.tsv)"
-    IFS=$'\n' read -d '' -ra cat_names <<< "$(cut -d$'\t' -f1 ${w}/categories_samples.tsv)"
-    
-    tmp="${kmersDir}/${cat_samples[0]// /.kmers.bin ${kmersDir}/}.kmers.bin "
-    cmd2+="--a-kmers $tmp"
-    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
-    cmd2+="--b-kmers $tmp"
-    tmp="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}/}.kmers.bin "
-    cmd2+="--c-kmers $tmp"
-    cmd2+="-w ${w}/statistic_kmers_${cat_names[0]}/"
-    
-    echo "${cmd2}"
-    ${cmd2}
-    if [[ $? -eq 0 ]]; then
-        echo "Processed three categories of samples: ${cat_names[@]}"
-    else
-        error "Error during step 2!"
-        exit 1
-    fi
-
-    mkdir ${w}/statistic_kmers_${cat_names[1]}
-    mkdir ${w}/statistic_kmers_${cat_names[1]}/kmers
-    ln -s `realpath $w`/statistic_kmers_${cat_names[0]}/kmers/filtered_groupB.kmers.bin ${w}/statistic_kmers_${cat_names[1]}/kmers/filtered_groupA.kmers.bin
-    mkdir ${w}/statistic_kmers_${cat_names[2]}
-    mkdir ${w}/statistic_kmers_${cat_names[2]}/kmers
-    ln -s `realpath $w`/statistic_kmers_${cat_names[0]}/kmers/filtered_groupC.kmers.bin ${w}/statistic_kmers_${cat_names[2]}/kmers/filtered_groupA.kmers.bin
 else # 4+ categories
-    cmd2+="-t stats-kmers "
+    cmd2+="-t top-stats-kmers "
     if [[ ${b} ]]; then
         cmd2+="-b ${b} "
+    fi
+    
+    if [[ ${nBest} ]]; then
+        cmd2+="--num-kmers ${nBest} "
     fi
     
     while read line ; do
@@ -268,13 +226,6 @@ else # 4+ categories
         echo "Processing category ${cat_samples[0]}"
         
         cmd2_i=$cmd2
-        
-        if [[ ${pChi2} ]]; then
-            cmd2_i+="--p-value-chi2 ${pChi2} "
-        fi
-        if [[ ${pMW} ]]; then
-            cmd2_i+="--p-value-mw ${pMW} "
-        fi
         
         tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
         cmd2_i+="--a-kmers $tmp"
@@ -311,28 +262,53 @@ cmd3+="-t component-extractor "
 if [[ ${depth} ]]; then
     cmd3+="--depth ${depth} "
 fi
-
-while read line ; do
-    IFS=$'\t' read -ra cat_samples <<< "${line}"
-    echo "Processing category ${cat_samples[0]}"
+if [[ ${n_cat} -lt 4 ]]; then # 2 or 3 categories
+    IFS=$'\n' read -d '' -ra cat_samples <<< "$(cut -d$'\t' -f2 ${w}/categories_samples.tsv)"
+    IFS=$'\n' read -d '' -ra cat_names <<< "$(cut -d$'\t' -f1 ${w}/categories_samples.tsv)"
+    echo "Processing ${AMOUNT} categories of samples: ${cat_names[@]}"
     
     cmd3_i=$cmd3
-    tmp="${w}/statistic_kmers_${cat_samples[0]}/kmers/filtered_groupA.kmers.bin "
+    tmp="${w}/statistic_kmers_all/kmers/top_${nBest}_chi_squared_specific.kmers.bin "
     cmd3_i+="--pivot $tmp"
-    tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+    tmp="${kmersDir}/${cat_samples[0]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+    tmp+="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+    if [[ ${n_cat} -eq 3 ]]; then
+        tmp+="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+    fi
     cmd3_i+="-i $tmp"
-    cmd3_i+="-w ${w}/components_${cat_samples[0]}/"
-
+    cmd3_i+="-w ${w}/components_all/"
     
     echo "${cmd3_i}"
     ${cmd3_i}
     if [[ $? -eq 0 ]]; then
-        echo "Processed category ${cat_samples[0]}"
+        echo "Processed ${AMOUNT} categories of samples: ${cat_names[@]}"
     else
         error "Error during step 3!"
         exit 1
     fi
-done<${w}/categories_samples.tsv
+else # 4+ categories
+    while read line ; do
+        IFS=$'\t' read -ra cat_samples <<< "${line}"
+        echo "Processing category ${cat_samples[0]}"
+        
+        cmd3_i=$cmd3
+        tmp="${w}/statistic_kmers_${cat_samples[0]}/kmers/top_${nBest}_chi_squared_specific.kmers.bin "
+        cmd3_i+="--pivot $tmp"
+        tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+        cmd3_i+="-i $tmp"
+        cmd3_i+="-w ${w}/components_${cat_samples[0]}/"
+
+        
+        echo "${cmd3_i}"
+        ${cmd3_i}
+        if [[ $? -eq 0 ]]; then
+            echo "Processed category ${cat_samples[0]}"
+        else
+            error "Error during step 3!"
+            exit 1
+        fi
+    done<${w}/categories_samples.tsv
+fi
 
 if [[ $? -eq 0 ]]; then
     comment "Step 3 finished successfully!"
@@ -349,32 +325,62 @@ comment "Running step 4: calculating features as coverage of components by sampl
 cmd4=$cmd
 cmd4+="-t features-calculator "
 
-while read line ; do
-    IFS=$'\t' read -ra cat_samples <<< "${line}"
-    echo "Processing category ${cat_samples[0]}"
+if [[ ${n_cat} -lt 4 ]]; then # 2 or 3 categories
+    IFS=$'\n' read -d '' -ra cat_samples <<< "$(cut -d$'\t' -f2 ${w}/categories_samples.tsv)"
+    IFS=$'\n' read -d '' -ra cat_names <<< "$(cut -d$'\t' -f1 ${w}/categories_samples.tsv)"
+    echo "Processing ${AMOUNT} categories of samples: ${cat_names[@]}"
     
     cmd4_i=$cmd4
-    cmd4_i+="-cm ${w}/components_${cat_samples[0]}/components.bin "
+    cmd4_i+="-cm ${w}/components_all/components.bin "
     cmd4_i+="-ka ${kmersDir}/*.kmers.bin "
-    cmd4_i+="-w ${w}/features_${cat_samples[0]}/"
-
+    cmd4_i+="-w ${w}/features_all/"
     
     echo "${cmd4_i}"
     ${cmd4_i}
     if [[ $? -eq 0 ]]; then
-        echo "Processed category ${cat_samples[0]}"
+        echo "Processed ${AMOUNT} categories of samples: ${cat_names[@]}"
     else
         error "Error during step 4"
         exit 1
     fi
-done<${w}/categories_samples.tsv
-
-python3 ${SOFT}/join_feature_vectors.py ${w} ${w}/categories_samples.tsv
-if [[ $? -eq 0 ]]; then
-    echo "Feature table saved to ${w}/feature_table.tsv"
+    
+    echo "all" > ${w}/tmp
+    python3 ${SOFT}/join_feature_vectors.py ${w} ${w}/tmp
+    if [[ $? -eq 0 ]]; then
+        echo "Feature table saved to ${w}/feature_table.tsv"
+    else
+        error "Error during step 4!"
+        exit 1
+    fi
+    rm ${w}/tmp
 else
-    error "Error during step 4!"
-    exit 1
+    while read line ; do
+        IFS=$'\t' read -ra cat_samples <<< "${line}"
+        echo "Processing category ${cat_samples[0]}"
+        
+        cmd4_i=$cmd4
+        cmd4_i+="-cm ${w}/components_${cat_samples[0]}/components.bin "
+        cmd4_i+="-ka ${kmersDir}/*.kmers.bin "
+        cmd4_i+="-w ${w}/features_${cat_samples[0]}/"
+
+        
+        echo "${cmd4_i}"
+        ${cmd4_i}
+        if [[ $? -eq 0 ]]; then
+            echo "Processed category ${cat_samples[0]}"
+        else
+            error "Error during step 4"
+            exit 1
+        fi
+    done<${w}/categories_samples.tsv
+
+    python3 ${SOFT}/join_feature_vectors.py ${w} ${w}/categories_samples.tsv
+    if [[ $? -eq 0 ]]; then
+        echo "Feature table saved to ${w}/feature_table.tsv"
+    else
+        error "Error during step 4!"
+        exit 1
+    fi
 fi
 
 if [[ $? -eq 0 ]]; then
@@ -395,31 +401,60 @@ else
     cmd5=$cmd
     cmd5+="-t comp2graph "
 
-    while read line ; do
-        IFS=$'\t' read -ra cat_samples <<< "${line}"
-        echo "Processing category ${cat_samples[0]}"
+    if [[ ${n_cat} -lt 4 ]]; then # 2 or 3 categories
+        IFS=$'\n' read -d '' -ra cat_samples <<< "$(cut -d$'\t' -f2 ${w}/categories_samples.tsv)"
+        IFS=$'\n' read -d '' -ra cat_names <<< "$(cut -d$'\t' -f1 ${w}/categories_samples.tsv)"
+        echo "Processing ${AMOUNT} categories of samples: ${cat_names[@]}"
         
         cmd5_i=$cmd5
-        cmd5_i+="-cf ${w}/components_${cat_samples[0]}/components.bin "
-        tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+        cmd5_i+="-cf ${w}/components_all/components.bin "
+        tmp="${kmersDir}/${cat_samples[0]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+        tmp+="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+        if [[ ${n_cat} -eq 3 ]]; then
+            tmp+="${kmersDir}/${cat_samples[2]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+        fi
         cmd5_i+="-i $tmp"
         cmd5_i+="-cov "
-        cmd5_i+="-w ${w}/contigs_${cat_samples[0]}/"
-
+        cmd5_i+="-w ${w}/contigs_all/"
         
         echo "${cmd5_i}"
         ${cmd5_i}
         
-        python3 ${SOFT}/graph2contigs.py ${w}/contigs_${cat_samples[0]}/
+        python3 ${SOFT}/graph2contigs.py ${w}/contigs_all/
         
         if [[ $? -eq 0 ]]; then
-            echo "Processed category ${cat_samples[0]}"
+            echo "Processed ${AMOUNT} categories of samples: ${cat_names[@]}"
         else
             error "Error during step 5"
             exit 1
         fi
-    done<${w}/categories_samples.tsv
+    else
+        while read line ; do
+            IFS=$'\t' read -ra cat_samples <<< "${line}"
+            echo "Processing category ${cat_samples[0]}"
+            
+            cmd5_i=$cmd5
+            cmd5_i+="-cf ${w}/components_${cat_samples[0]}/components.bin "
+            tmp="${kmersDir}/${cat_samples[1]// /.kmers.bin ${kmersDir}/}.kmers.bin "
+            cmd5_i+="-i $tmp"
+            cmd5_i+="-cov "
+            cmd5_i+="-w ${w}/contigs_${cat_samples[0]}/"
 
+            
+            echo "${cmd5_i}"
+            ${cmd5_i}
+            
+            python3 ${SOFT}/graph2contigs.py ${w}/contigs_${cat_samples[0]}/
+            
+            if [[ $? -eq 0 ]]; then
+                echo "Processed category ${cat_samples[0]}"
+            else
+                error "Error during step 5"
+                exit 1
+            fi
+        done<${w}/categories_samples.tsv
+    fi
+    
     if [[ $? -eq 0 ]]; then
         comment "Step 5 finished successfully!"
     else
@@ -429,6 +464,6 @@ else
 fi
 
 
-comment "MetaFX stats module finished successfully!"
+comment "MetaFX chisq module finished successfully!"
 exit 0
 

@@ -37,6 +37,11 @@ jobs:
       run: |
         export PATH=bin:$PATH
         metafx colored -t 6 -m 6G -k 31 -i test_data/sample_list_3.txt --n-comps 100 --perc 0.7 -w wd_colored
+    - name: metafx chisq (with depth)
+      run: |
+        export PATH=bin:$PATH
+        metafx chisq -t 6 -m 6G -k 31 -i test_data/sample_list.txt -w wd_chisq_4 --skip-graph -n 1000
+        metafx chisq -t 6 -m 6G -k 31 -i test_data/sample_list_3.txt -w wd_chisq_3 --skip-graph -n 10000 --depth 15
     - name: metafx stats
       run: |
         export PATH=bin:$PATH
