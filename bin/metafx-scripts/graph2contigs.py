@@ -11,11 +11,12 @@ if __name__ == "__main__":
     for line in open(wd + "/components-graph.gfa"):
         if line.split()[0] == 'S':
             _, name, seq, *_ = line.strip().split(sep="\t")
+            raw_name = name
             name = int(name.split("_")[1][1:])
             if name != comp:
                 comp += 1
                 comp_i = 0
             comp_i += 1
-            print(">" + str(comp) + "_" + str(comp_i), file=file)
+            print(">" + str(comp) + "_" + str(comp_i) + "\t" + raw_name, file=file)
             print(seq, file=file)
     file.close()

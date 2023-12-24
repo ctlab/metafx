@@ -40,8 +40,16 @@ jobs:
     - name: metafx chisq (with depth)
       run: |
         export PATH=bin:$PATH
-        metafx chisq -t 6 -m 6G -k 31 -i test_data/sample_list.txt -w wd_chisq_4 --skip-graph -n 1000
+        metafx chisq -t 6 -m 6G -k 31 -i test_data/sample_list.txt -w wd_chisq_4 -n 1000
         metafx chisq -t 6 -m 6G -k 31 -i test_data/sample_list_3.txt -w wd_chisq_3 --skip-graph -n 10000 --depth 15
+    - name: metafx feature_analysis
+      run: |
+        export PATH=bin:$PATH
+        mkdir reads
+        ln -s test_data/3* reads/
+        ln -s test_data/4* reads/
+        ln -s test_data/test/* reads/
+        metafx feature_analysis -k 31 -t 6 -m 6G -f wd_chisq_4/ -n A_19 -r reads/ --relab 0.5 -w wd_feat_analysis
     - name: metafx stats
       run: |
         export PATH=bin:$PATH

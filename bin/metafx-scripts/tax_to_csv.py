@@ -47,7 +47,8 @@ if __name__ == "__main__":
         listLine = line.split('\t')
         if (listLine[0] == 'C'):
             tax_id = listLine[2].split('taxid')[1][1:-1]
-            tax_ids.append((listLine[1], tax_id))
+            #tax_ids.append((listLine[1], tax_id))
+            tax_ids.append((listLine[1].split("\t")[1], tax_id))
     fileR.close()
 
     ncbi = NCBITaxa()
