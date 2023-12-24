@@ -46,9 +46,9 @@ jobs:
       run: |
         export PATH=bin:$PATH
         mkdir reads
-        ln -s test_data/3* reads/
-        ln -s test_data/4* reads/
-        ln -s test_data/test/* reads/
+        ln -s `pwd`/test_data/3* reads/
+        ln -s `pwd`/test_data/4* reads/
+        ln -s `pwd`/test_data/test/* reads/
         metafx feature_analysis -k 31 -t 6 -m 6G -f wd_chisq_4/ -n A_19 -r reads/ --relab 0.5 -w wd_feat_analysis
     - name: metafx stats
       run: |
