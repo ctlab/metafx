@@ -165,7 +165,7 @@ while read sample ; do
     echo -n "Processing sample ${sample} (log saved to ${w}/metacherchant.log) ...    "
     
     echo "${cmd2_i}" >> ${w}/metacherchant.log
-    ${cmd2_i} &>> ${w}/metacherchant.log
+    ${cmd2_i} 2>&1 >> ${w}/metacherchant.log
     if [[ $? -eq 0 ]]; then
         echo "DONE"
     else
