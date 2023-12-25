@@ -160,12 +160,13 @@ while read sample ; do
     cmd2_i=${cmd2}
     cmd2_i+="-w ${w}/wd_${sample} "
     cmd2_i+="-o ${w}/wd_${sample}/output "
-    readsFiles=`find ${readsDir}/${sample}_* ${readsDir}/${sample}.* 2>/dev/null | paste -sd " "`
+    readsFiles=`find ${readsDir}/${sample}_* ${readsDir}/${sample}.* 2>/dev/null | paste -s -d " " -`
     cmd2_i+="--reads ${readsFiles}"
+
+    echo "${cmd2_i}"
     echo -n "Processing sample ${sample} (log saved to ${w}/metacherchant.log) ...    "
-    
-    echo "${cmd2_i}" >> ${w}/metacherchant.log
-    ${cmd2_i} 2>&1 >> ${w}/metacherchant.log
+
+    ${cmd2_i} 1>>${w}/metacherchant.log 2>&1
     if [[ $? -eq 0 ]]; then
         echo "DONE"
     else
