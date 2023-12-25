@@ -119,13 +119,13 @@ fi
 mkdir ${w}
 cmd1="python ${SOFT}/select_samples_by_feature.py --work-dir ${featDir} --feature ${featName} --res-dir ${w} "
 if [[ $relab ]]; then
-    cmd+="--board ${relab}"
+    cmd1+="--board ${relab}"
 fi
 
 echo "$cmd1"
 $cmd1
 if [[ $? -eq 0 ]]; then
-    echo "Total `wc -l ${w}/samples_list_feature_${featName}.txt` samples were selected"
+    echo "Total `wc -l ${w}/samples_list_feature_${featName}.txt | cut -d" " -f1` samples were selected"
     echo "List of samples containing feature '${featName}' saved to ${w}/samples_list_feature_${featName}.txt"
     echo "Nucleotide sequence for feature '${featName}' saved to ${w}/seq_feature_${featName}.fasta"
     comment "Step 1 finished successfully!"
