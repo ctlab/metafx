@@ -18,6 +18,7 @@ Here is a short version of it.
   * [Idea of MetaFX](#idea-of-metafx)
   * [Installation](#installation)
   * [Running instructions](#running-instructions) 
+  * [Video tutorial](#video-tutorial)
   * [Examples](#examples)
   * [Contact](#contact)
   * [License](#license)
@@ -87,6 +88,14 @@ MetaFX supports both single-end and paired-end input files. For correct detectio
 
 By running MetaFX a working directory is created (by default `./workDir/`).
 All intermediate files and final results are saved there.
+
+
+## Video tutorial
+
+Details about installation and first use of MetaFX are available in the next [video on youtube](https://www.youtube.com/watch?v=mTuP1jm_OlI):
+
+[![Youtube video tutorial](https://github.com/ctlab/metafx/assets/17966048/126a87c5-492b-4272-aebc-b440d9f541a3)](https://www.youtube.com/watch?v=mTuP1jm_OlI)
+
 
 ## Examples
 
