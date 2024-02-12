@@ -61,7 +61,7 @@ export PATH=/path/to/metafx/bin:$PATH
 
 ##### Requirements:
 * JRE 1.8 or higher
-* python3
+* python=3.9.5
 * python libraries listed in `requirements.txt` file. Can be installed using pip <br/>
 ```shell
 python -m pip install --upgrade pip
@@ -71,6 +71,11 @@ pip install -r requirements.txt
 * If you want to use `metafx metaspades` pipeline, you will also need [SPAdes](https://cab.spbu.ru/software/spades/) software. Please follow their [installation instructions](https://github.com/ablab/spades#sec2) (not recommended for first-time use).
 
 Scripts have been tested under *Ubuntu 18.04 LTS*, *Ubuntu 20.04 LTS*, *macOS 11 Big Sur*, and *macOS 12 Monterey*, and should generally work on Linux/macOS.
+
+Multiple cores can be used to speed up computations.
+
+Required RAM grows linearly with the size of the input dataset. Hard drive space for intermediate computations and results also growth linearly. For example, to process 12GB dataset in [tutorial](https://github.com/ctlab/metafx/wiki/MetaFX-tutorial) we used 16GB disk space, 8GB RAM, and 6 threads, which took 1 hour to process.
+
 
 ## Running instructions
 
