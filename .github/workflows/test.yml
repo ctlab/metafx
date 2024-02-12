@@ -65,7 +65,7 @@ jobs:
     - name: metafx metaspades (Linux)
       if : matrix.os == 'ubuntu-20.04'
       run: |
-        wget http://cab.spbu.ru/files/release3.15.5/SPAdes-3.15.5-Linux.tar.gz
+        wget https://github.com/ablab/spades/releases/download/v3.15.5/SPAdes-3.15.5-Linux.tar.gz
         tar -xzf SPAdes-3.15.5-Linux.tar.gz
         export PATH=bin:$PATH
         export PATH=SPAdes-3.15.5-Linux/bin/:$PATH
