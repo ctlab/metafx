@@ -15,7 +15,8 @@ help_message () {
     echo ""
     echo "Input parameters:"
     echo "    -f | --feature-table  <filename>   file with feature table in tsv format: rows – features, columns – samples (\"workDir/feature_table.tsv\" can be used) [mandatory]"
-    echo "         --model          <filename>   file with pre-trained classification model, obtained via 'fit' or 'cv' module (\"workDir/rf_model.joblib\" can be used) [mandatory]"
+    echo "         --model          <filename>   file with pre-trained classification model, obtained via 'fit' or 'cv' module (\"workDir/model.joblib\" can be used) [mandatory]"
+    echo "    -e | --estimator      [RF, XGB, Torch] classification model: RF – scikit-learn Random Forest, XGB – XGBoost, Torch – PyTorch neural network, default: RF]"
     echo "    -i | --metadata-file  <filename>   tab-separated file with 2 values in each row: <sample>\t<category> to check accuracy of predictions [optional, default: None]"
     echo "         --name           <filename>   name of output file with samples predicted labels in workDir [optional, default: predictions]"
     echo "";}
@@ -52,6 +53,11 @@ case $key in
     ;;
     --model)
     modelFile="$2"
+    shift
+    shift
+    ;;
+    -e|--estimator)
+    estimator="$2"
     shift
     shift
     ;;
@@ -98,8 +104,20 @@ else
     outputName="${w}/predictions"
 fi
 
+if [[ ${estimator} ]] ; then
+    case ${estimator} in
+        "RF") : ;;
+        "XGB") : ;;
+        "Torch") : ;;
+        *) 
+        error "Unknown classification model type! Please, select from [RF, XGB, Torch]"
+        exit 1
+        ;;
+    esac
+fi
 
-python3 ${SOFT}/predict.py ${featureFile} ${outputName} ${modelFile} ${metadataFile}
+
+python3 ${SOFT}/predict.py ${featureFile} ${outputName} ${modelFile} ${estimator} ${metadataFile}
 if [[ $? -ne 0 ]]; then
     error "Labels prediction failed!"
     exit 1

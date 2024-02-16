@@ -75,10 +75,11 @@ jobs:
         export PATH=bin:$PATH
         metafx unique -t 6 -m 6G -k 31 -i test_data/sample_list_train.txt -w wd_unique_pca --kmers-dir wd_metafast/kmer-counter-many/kmers
         metafx pca -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv --show -w wd_pca
-    - name: metafx fit
+    - name: metafx fit (RF & XGB & PyTorch)
       run: |
         export PATH=bin:$PATH
-        metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit
+        metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_rf
+        metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_xgb -e XGB
     - name: metafx cv
       run: |
         export PATH=bin:$PATH

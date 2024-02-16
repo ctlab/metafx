@@ -11,8 +11,11 @@ if __name__ == "__main__":
     outName = sys.argv[2]
     model = load(sys.argv[3])
     metadata = None
-    if len(sys.argv) == 5:
-        metadata = pd.read_csv(sys.argv[4], sep="\t", header=None, index_col=0, dtype=str)
+    model_type = sys.argv[4]
+    if model_type == "XGB":
+        le = load(sys.argv[3][:-7] + "_le.joblib")
+    if len(sys.argv) == 6:
+        metadata = pd.read_csv(sys.argv[5], sep="\t", header=None, index_col=0, dtype=str)
         metadata.index = metadata.index.astype(str)
 
     M = features.shape[0]  # features count
@@ -20,6 +23,9 @@ if __name__ == "__main__":
 
     X = features.T
     y_pred = model.predict(X)
+
+    if model_type == "XGB":
+        y_pred = le.inverse_transform(y_pred)
 
     outFile = open(outName + ".tsv", "w")
     for sam, pred in zip(X.index, y_pred):

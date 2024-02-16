@@ -49,11 +49,11 @@ if __name__ == "__main__":
         elif opt == "--board":
             board = float(arg)
 
-    data = pd.read_csv(workDir + '/feature_table.tsv', header=0, index_col=0, sep = '\t')
+    data = pd.read_csv(workDir + '/feature_table.tsv', header=0, index_col=0, sep='\t')
     data = data.T
     filteredData = data[feature][data[feature] > board].keys().tolist()
     samplesList = open(resDir + '/samples_list_feature_' + feature + '.txt', 'w')
-    print(*filteredData, sep = "\n", file=samplesList)
+    print(*filteredData, sep="\n", file=samplesList)
     samplesList.close()
 
     resSeqFile = open(resDir + '/seq_feature_' + feature + '.fasta', 'w')
@@ -63,7 +63,7 @@ if __name__ == "__main__":
         line = featuresFasta.readline()
         if not line:
             break
-        if len(line)==0:
+        if len(line) == 0:
             continue
         if line[0] == '>':
             line = line.strip()[1:]

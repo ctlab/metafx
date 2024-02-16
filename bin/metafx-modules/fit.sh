@@ -16,7 +16,8 @@ help_message () {
     echo "Input parameters:"
     echo "    -f | --feature-table  <filename>   file with feature table in tsv format: rows – features, columns – samples (\"workDir/feature_table.tsv\" can be used) [mandatory]"
     echo "    -i | --metadata-file  <filename>   tab-separated file with 2 values in each row: <sample>\t<category> (\"workDir/samples_categories.tsv\" can be used) [mandatory]"
-    echo "         --name           <filename>   name of output trained model in workDir [optional, default: rf_model]"
+    echo "    -e | --estimator      [RF, XGB, Torch] classification model: RF – scikit-learn Random Forest, XGB – XGBoost, Torch – PyTorch neural network, default: RF]"
+    echo "         --name           <filename>   name of output trained model in workDir [optional, default: model]"
     echo "";}
 
 
@@ -34,6 +35,7 @@ error   () { ${SOFT}/pretty_print.py "$1" "*"; exit 1; }
 
 
 w="workDir"
+estimator="RF"
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
@@ -50,6 +52,11 @@ case $key in
     ;;
     -i|--metadata-file)
     metadataFile="$2"
+    shift
+    shift
+    ;;
+    -e|--estimator)
+    estimator="$2"
     shift
     shift
     ;;
@@ -88,11 +95,23 @@ mkdir -p ${w}
 if [[ ${outputName} ]]; then
     outputName="${w}/${outputName}"
 else
-    outputName="${w}/rf_model"
+    outputName="${w}/model"
+fi
+
+if [[ ${estimator} ]] ; then
+    case ${estimator} in
+        "RF") : ;;
+        "XGB") : ;;
+        "Torch") : ;;
+        *) 
+        error "Unknown classification model type! Please, select from [RF, XGB, Torch]"
+        exit 1
+        ;;
+    esac
 fi
 
 
-python3 ${SOFT}/fit.py ${featureFile} ${outputName} ${metadataFile}
+python3 ${SOFT}/fit.py ${featureFile} ${outputName} ${metadataFile} ${estimator}
 if [[ $? -ne 0 ]]; then
     error "Classification model training failed!"
     exit 1
