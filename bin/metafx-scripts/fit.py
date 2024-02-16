@@ -8,6 +8,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from xgboost import XGBClassifier
 from sklearn import preprocessing
+from metafx_torch import TorchLinearModel
+import torch
 
 if __name__ == "__main__":
     features = pd.read_csv(sys.argv[1], header=0, index_col=0, sep="\t")
@@ -23,19 +25,35 @@ if __name__ == "__main__":
     M = features.shape[0]  # features count
     N = features.shape[1]  # samples  count
 
-    model = RandomForestClassifier(n_estimators=100) if sys.argv[4] == "RF" else XGBClassifier(n_estimators=100)
     X = features.T
     y = np.array([metadata.loc[i, 1] for i in X.index])
+
+    model = None
+    if sys.argv[4] == "RF":
+        model = RandomForestClassifier(n_estimators=100)
+    elif sys.argv[4] == "XGB":
+        model = XGBClassifier(n_estimators=100)
+    else:
+        model = TorchLinearModel(n_features=M, n_classes=len(set(y)))
 
     if sys.argv[4] == "XGB":
         le = preprocessing.LabelEncoder()
         le.fit(y)
         y = le.transform(y)
+    elif sys.argv[4] == "Torch":
+        le = preprocessing.LabelEncoder()
+        le.fit(y)
+        y = le.transform(y)
 
     model.fit(X, y)
-    dump(model, outName + ".joblib")
 
-    if sys.argv[4] == "XGB":
+    if sys.argv[4] == "RF":
+        dump(model, outName + ".joblib")
+    elif sys.argv[4] == "XGB":
+        dump(model, outName + ".joblib")
+        dump(le, outName + "_le.joblib")
+    elif sys.argv[4] == "Torch":
+        torch.save(model, outName + ".joblib")
         dump(le, outName + "_le.joblib")
 
     print("Model accuracy after training:")

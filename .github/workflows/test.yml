@@ -80,6 +80,7 @@ jobs:
         export PATH=bin:$PATH
         metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_rf
         metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_xgb -e XGB
+        metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_torch -e Torch
     - name: metafx cv
       run: |
         export PATH=bin:$PATH
