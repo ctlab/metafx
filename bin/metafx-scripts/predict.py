@@ -12,6 +12,7 @@ if __name__ == "__main__":
     outName = sys.argv[2]
     model_type = sys.argv[4]
 
+    model = None
     if model_type == "RF":
         model = load(sys.argv[3])
     elif model_type == "XGB":
