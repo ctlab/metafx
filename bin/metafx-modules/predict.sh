@@ -37,6 +37,7 @@ error   () { ${SOFT}/pretty_print.py "$1" "*"; exit 1; }
 
 w="workDir"
 metadataFile=""
+estimator="RF"
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
