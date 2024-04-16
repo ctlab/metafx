@@ -55,7 +55,7 @@ cd metafx
 Then add MetaFX binary directory to the `PATH` variable.
 
 ```shell
-export PATH=/path/to/metafx/bin:$PATH
+export PATH=/path/to/metafx/bin:/path/to/metafx/bin/metafx-modules:/path/to/metafx/bin/metafx-scripts:$PATH
 ```
 > For permanent use, add the above line to your ~/.profile or ~/.bashrc file.
 
