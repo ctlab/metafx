@@ -1,5 +1,7 @@
 
 ![Test](https://github.com/ctlab/metafx/actions/workflows/test.yml/badge.svg)
+[![Install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://anaconda.org/bioconda/metafx)
+[![Anaconda-Server Badge](https://anaconda.org/bioconda/metafx/badges/downloads.svg)](https://anaconda.org/bioconda/metafx)
 
 # MetaFX
 
@@ -17,6 +19,8 @@ Here is a short version of it.
 
   * [Idea of MetaFX](#idea-of-metafx)
   * [Installation](#installation)
+    * [Conda](#conda)
+    * [Manual](#manual)
   * [Running instructions](#running-instructions) 
   * [Video tutorial](#video-tutorial)
   * [Examples](#examples)
@@ -45,6 +49,17 @@ There are pipelines for analysis of the feature extraction results. Methods for 
 
 
 ## Installation
+
+### Conda
+
+To install MetaFX through conda run:
+
+```
+conda install -c bioconda metafx
+```
+
+
+### Manual
 
 To run MetaFX,  one need to clone repo with all binaries.
 
