@@ -24,6 +24,7 @@ Here is a short version of it.
   * [Running instructions](#running-instructions) 
   * [Video tutorial](#video-tutorial)
   * [Examples](#examples)
+  * [Citation](#citation)
   * [Contact](#contact)
   * [License](#license)
   * [See also](#see-also)
@@ -238,6 +239,13 @@ metafx predict -w wd_predict -f wd_new_samples/feature_table.tsv --model wd_cv/r
 |test_A|A|A|
 |test_B|B|B|
 |test_C|C|C|
+
+
+## Citation
+
+If you use MetaFX in your research, please cite the following publication:
+
+Artem Ivanov, Vladimir Popov, Maxim Morozov, Evgenii Olekhnovich, Vladimir Ulyantsev, MetaFX: feature extraction from whole-genome metagenomic sequencing data, Bioinformatics, Volume 42, Issue 2, February 2026, btag018, https://doi.org/10.1093/bioinformatics/btag018
 
 ## Contact
 
