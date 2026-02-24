@@ -29,6 +29,7 @@ jobs:
       run: |
         brew update-reset
         brew install coreutils
+        brew install libomp
     - name: metafx metafast
       run: |
         export PATH=bin:$PATH
@@ -63,7 +64,7 @@ jobs:
         export PATH=SPAdes-3.15.5-Darwin/bin/:$PATH
         metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades --skip-graph
     - name: metafx metaspades (Linux)
-      if : matrix.os == 'ubuntu-22.04'
+      if : matrix.os == 'ubuntu-20.04'
       run: |
         wget https://github.com/ablab/spades/releases/download/v3.15.5/SPAdes-3.15.5-Linux.tar.gz
         tar -xzf SPAdes-3.15.5-Linux.tar.gz
