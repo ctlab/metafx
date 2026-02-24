@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-12, macos-11]
+        os: [ubuntu-22.04, macos-15]
     
     runs-on: ${{ matrix.os }}
 
@@ -25,7 +25,7 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Install coreutils (macOS)
-      if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
+      if : matrix.os == 'macos-15'
       run: |
         brew update-reset
         brew install coreutils
@@ -55,7 +55,7 @@ jobs:
         export PATH=bin:$PATH
         metafx stats -t 6 -m 6G -k 31 -i test_data/sample_list.txt -w wd_stats --skip-graph
     - name: metafx metaspades (macOS)
-      if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
+      if : matrix.os == 'macos-15'
       run: |
         curl -L https://github.com/ablab/spades/releases/download/v3.15.5/SPAdes-3.15.5-Darwin.tar.gz -o SPAdes-3.15.5-Darwin.tar.gz
         tar -zxf SPAdes-3.15.5-Darwin.tar.gz
@@ -63,7 +63,7 @@ jobs:
         export PATH=SPAdes-3.15.5-Darwin/bin/:$PATH
         metafx metaspades -t 6 -m 6G -k 31 -i test_data/33* -b1 100 -b2 1000 -l 50 -w wd_metaspades --skip-graph
     - name: metafx metaspades (Linux)
-      if : matrix.os == 'ubuntu-20.04'
+      if : matrix.os == 'ubuntu-22.04'
       run: |
         wget https://github.com/ablab/spades/releases/download/v3.15.5/SPAdes-3.15.5-Linux.tar.gz
         tar -xzf SPAdes-3.15.5-Linux.tar.gz
@@ -103,7 +103,7 @@ jobs:
         export PATH=bin:$PATH
         metafx extract_kmers -t 6 -m 6G -k 31 -i test_data/test/* test_data/3* test_data/4* -w wd_kmers
     - name: metafx bandage (macOS)
-      if : ${{ matrix.os == 'macos-12' || matrix.os == 'macos-11' }}
+      if : matrix.os == 'macos-15'
       run: |
         mkdir Bandage
         cd Bandage
@@ -115,7 +115,7 @@ jobs:
         export PATH=SPAdes-3.15.5-Darwin/bin/:$PATH
         metafx bandage -w wd_bandage --draw-graph -f wd_unique_pca/ -n 20
     - name: metafx bandage (Linux)
-      if : matrix.os == 'ubuntu-20.04'
+      if : matrix.os == 'ubuntu-22.04'
       run: |
         mkdir Bandage
         cd Bandage
