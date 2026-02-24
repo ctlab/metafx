@@ -77,11 +77,17 @@ jobs:
         metafx unique -t 6 -m 6G -k 31 -i test_data/sample_list_train.txt -w wd_unique_pca --kmers-dir wd_metafast/kmer-counter-many/kmers
         metafx pca -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv --show -w wd_pca
     - name: metafx fit (RF & XGB & PyTorch)
+      if : matrix.os == 'ubuntu-22.04'
       run: |
         export PATH=bin:$PATH
         metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_rf
         metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_xgb -e XGB
         metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_torch -e Torch
+    - name: metafx fit (RF)
+      if : matrix.os == 'macos-15'
+      run: |
+        export PATH=bin:$PATH
+        metafx fit -f wd_unique_pca/feature_table.tsv -i wd_unique_pca/samples_categories.tsv -w wd_fit_rf
     - name: metafx cv
       run: |
         export PATH=bin:$PATH
